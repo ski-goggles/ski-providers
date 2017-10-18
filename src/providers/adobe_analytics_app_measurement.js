@@ -7,6 +7,7 @@ const LINK_TYPE = 'Link type';
 const EVENTS = 'Events';
 
 const transformer = (data: WebRequestData): WebRequestData => {
+    // $FlowFixMe
     const params = sortBy(prop('label'), map(transform, data.params));
     const dataWithTitle = setTitle(getEventName(params), data);
     return assoc('params', params, dataWithTitle);
@@ -21,6 +22,7 @@ const AdobeAnalyticsAppMeasurement: Provider = {
 };
 
 const getEventName = (params: Array<WebRequestParam>) : string | null => {
+    // $FlowFixMe
     const isCustomEvent = contains(LINK_TYPE, pluck('label', params));
     const eventRow = defaultTo(
         {}, find(
@@ -29,6 +31,7 @@ const getEventName = (params: Array<WebRequestParam>) : string | null => {
         )
     );
 
+    // $FlowFixMe
     const eventName = propOr('Unknown Event', 'value', eventRow);
     if(isCustomEvent){
         return eventName;

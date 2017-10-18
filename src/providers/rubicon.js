@@ -9,6 +9,7 @@ const Rubicon: Provider = {
     logo: 'rubicon.png',
     pattern: /fastlane\.rubiconproject\.com/,
     transformer: (data: WebRequestData) : WebRequestData => {
+        // $FlowFixMe
         const params = sortBy(prop('label'), map(transform, data.params));
         const dataWithTitle = setTitle('Ad Load Request', data);
         return assoc('params', params, dataWithTitle);

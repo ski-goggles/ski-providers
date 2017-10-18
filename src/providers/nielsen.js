@@ -9,6 +9,7 @@ const Nielsen: Provider = {
     logo: 'nielsen.png',
     pattern: /\.imrworldwide.com\/cgi-bin\/m\?/,
     transformer: (data: WebRequestData) : WebRequestData => {
+        // $FlowFixMe
         const params = sortBy(prop('label'), map(transform, data.params));
         const dataWithTitle = setTitle('Page View', data);
         return assoc('params', params, dataWithTitle);
