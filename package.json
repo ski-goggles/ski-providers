@@ -1,6 +1,6 @@
 {
   "name": "ski-providers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Analytics Providers for Ski Goggles and related projects",
   "author": "prem.pillai@gmail.com",
   "license": "MIT",
@@ -36,10 +36,15 @@
     "ramda": "^0.24.1",
     "url": "^0.11.0"
   },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register \"src/**/*.test.js\"",
     "build": "yarn babel-build && yarn flow-build",
-    "babel-build": "babel src/ -d dist",
+    "babel-build": "babel src/ -d dist --ignore '**/__tests__/*'",
     "flow-build": "flow-copy-source -v -i '**/__tests__/*' src dist"
   }
 }
