@@ -7,6 +7,7 @@ const EVENT_PAYLOAD = 'Event Payload';
 const EVENT = 'Event';
 
 const transformer = (data: WebRequestData): WebRequestData => {
+    // $FlowFixMe
     const params = sortBy(prop('label'), map(transform, data.params));
     const dataWithTitle = setTitle(getEventName(params), data);
     return assoc('params', params, dataWithTitle);
@@ -22,6 +23,7 @@ const Snowplow: Provider = {
 
 const getEventName = (params: Array<WebRequestParam>) : string => {
     const row = getEventRow(params) || {};
+    // $FlowFixMe
     const eventType = prop('value', row);
     switch (eventType) {
     case 'pv':
@@ -35,6 +37,7 @@ const getEventName = (params: Array<WebRequestParam>) : string => {
 
 const getEventRow = (params: Array<WebRequestParam>) : ?WebRequestParam => {
     return find(
+        // $FlowFixMe
         e => prop('label', e) == EVENT,
         params
     );
@@ -44,10 +47,13 @@ const getTitleFromUePx = (params: Array<WebRequestParam>) : string => {
     // Could go wrong in multiple ways
     try {
         const ue_px_row = find(
+            // $FlowFixMe
             e => prop('label', e) == EVENT_PAYLOAD,
             params
         );
+        // $FlowFixMe
         const json = JSON.parse(prop('value', ue_px_row));
+        // $FlowFixMe
         return pathOr('Unknown Event', ['data', 'data', 'event_name'], json);
     } catch (e) {
         console.debug('Unpareable ue_px row from: ',  params);

@@ -9,6 +9,7 @@ const Krux: Provider = {
     logo: 'krux.png',
     pattern: /beacon\.krxd\.net\/pixel\.gif/,
     transformer: (data: WebRequestData) : WebRequestData => {
+        // $FlowFixMe
         const params = sortBy(prop('label'), map(transform, data.params));
         const dataWithTitle = setTitle(getEventName(params), data);
         return assoc('params', params, dataWithTitle);
@@ -20,6 +21,7 @@ const getEventName = (params: Array<WebRequestParam>) : string | null => {
         e => e.label == 'fired',
         params
     );
+    // $FlowFixMe
     return defaultTo('Page View', prop('value', defaultTo({}, row)));
 };
 

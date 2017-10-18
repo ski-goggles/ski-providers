@@ -1,6 +1,6 @@
 {
   "name": "ski-providers",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Analytics Providers for Ski Goggles and related projects",
   "author": "prem.pillai@gmail.com",
   "license": "MIT",
@@ -26,6 +26,7 @@
     "eslint-plugin-react": "^7.3.0",
     "flow-bin": "^0.53.1",
     "flow-copy-source": "^1.2.1",
+    "flow-typed": "^2.2.0",
     "flowtype-loader": "^0.2.2",
     "mocha": "^3.5.3",
     "yarn": "^1.2.1"
