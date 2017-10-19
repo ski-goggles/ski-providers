@@ -1,11 +1,18 @@
 {
   "name": "ski-providers",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Analytics Providers for Ski Goggles and related projects",
-  "main": "dist/index.js",
   "author": "prem.pillai@gmail.com",
   "license": "MIT",
+  "repository": "https://github.com/ski-goggles/ski-providers",
+  "homepage": "https://github.com/ski-goggles/ski-providers",
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "main": "dist/index.js",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
@@ -18,8 +25,10 @@
     "eslint-plugin-flowtype": "^2.35.0",
     "eslint-plugin-react": "^7.3.0",
     "flow-bin": "^0.53.1",
+    "flow-copy-source": "^1.2.1",
     "flowtype-loader": "^0.2.2",
-    "mocha": "^3.5.3"
+    "mocha": "^3.5.3",
+    "yarn": "^1.2.1"
   },
   "dependencies": {
     "moment": "^2.18.1",
@@ -29,6 +38,8 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register \"src/**/*.test.js\"",
-    "build": "babel src/ --out-dir dist"
+    "build": "yarn babel-build && yarn flow-build",
+    "babel-build": "babel src/ -d dist",
+    "flow-build": "flow-copy-source -v -i '**/__tests__/*' src dist"
   }
 }
