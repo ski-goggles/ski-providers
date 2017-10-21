@@ -1,16 +1,8 @@
 // @flow
 
-import type { ProviderCanonicalName, Provider, WebRequestData } from './types';
-import * as Providers from './providers';
+import type { WebRequestData } from './types';
 // $FlowFixMe
-import { values, find, propOr, lensPath, set } from 'ramda';
-
-export const lookup = (name: ProviderCanonicalName): ?Provider => {
-    return find(
-        (p) => (p.canonicalName === name),
-        values(Providers)
-    );
-};
+import { propOr, lensPath, set } from 'ramda';
 
 export const labelReplacerFromDictionary = (label: string, dictionary: {[string]: string}): string => {
     return propOr(label, label, dictionary);

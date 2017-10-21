@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Rubicon } from '../providers/rubicon';
+import { Rubicon } from '../rubicon';
 import { path } from 'ramda';
 
 describe('Rubicon', () => {

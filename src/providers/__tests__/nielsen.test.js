@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Nielsen } from '../providers/nielsen';
+import { Nielsen } from '../nielsen';
 import { path } from 'ramda';
 
 describe('Nielsen', () => {

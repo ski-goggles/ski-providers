@@ -1,7 +1,7 @@
 // @flow
 import type { Provider, WebRequestParam, WebRequestData } from '../types';
 import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo, isEmpty } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../helpers.js';
+import { labelReplacerFromDictionary, setTitle } from '../private_helpers.js';
 
 const LINK_TYPE = 'Link type';
 const EVENTS = 'Events';

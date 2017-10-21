@@ -1,7 +1,7 @@
 // @flow
 import type { Provider, WebRequestParam, WebRequestData } from '../types';
 import { find, map, assoc, prop, defaultTo, sortBy } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../helpers.js';
+import { labelReplacerFromDictionary, setTitle } from '../private_helpers.js';
 
 const Krux: Provider = {
     canonicalName: 'Krux',

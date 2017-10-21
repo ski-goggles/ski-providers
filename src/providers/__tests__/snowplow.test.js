@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Snowplow } from '../providers/snowplow';
+import { Snowplow } from '../snowplow';
 import { path, map, prop } from 'ramda';
 import { snowplowFixture } from './fixtures';
 

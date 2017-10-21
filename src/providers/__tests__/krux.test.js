@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { Krux } from '../providers/krux';
+import { Krux } from '../krux';
 import { path } from 'ramda';
 
 describe('Krux', () => {

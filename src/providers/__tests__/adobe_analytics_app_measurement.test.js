@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { AdobeAnalyticsAppMeasurement } from '../providers/adobe_analytics_app_measurement';
+import { AdobeAnalyticsAppMeasurement } from '../adobe_analytics_app_measurement';
 import { path } from 'ramda';
 
 describe('Adobe Analytics Manager', () => {
