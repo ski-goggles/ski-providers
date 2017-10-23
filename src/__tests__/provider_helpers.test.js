@@ -1,7 +1,9 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { lookup } from '../provider_helpers';
+import { lookup, lookupByUrl } from '../provider_helpers';
 import { Snowplow } from '../providers/snowplow';
+import { map, propOr } from 'ramda';
+import { matchedUrls } from './fixtures';
 
 describe('Providers', () => {
     describe('Helpers', () => {
@@ -19,6 +21,20 @@ describe('Providers', () => {
                     expect(returned).to.eq(undefined);
                 });
             });
+        });
+
+        describe('lookupByUrl', () => {
+            map(
+                (item) => {
+                    describe(`with a url of provider: ${item.provider}`, () => {
+                        it('matches the right provider', () => {
+                            const provider = propOr(null, 'displayName', lookupByUrl(item.url));
+                            expect(provider).to.eql(item.provider);
+                        });
+                    });
+                },
+                matchedUrls
+            );
         });
     });
 });
