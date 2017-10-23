@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { lookup, lookupByUrl } from '../provider_helpers';
+import { lookup, lookupByUrl, generateMasterPattern, matchesBroadly } from '../provider_helpers';
 import { Snowplow } from '../providers/snowplow';
-import { map, propOr } from 'ramda';
+import { map, propOr, path } from 'ramda';
 import { matchedUrls } from './fixtures';
 
 describe('Providers', () => {
@@ -35,6 +35,32 @@ describe('Providers', () => {
                 },
                 matchedUrls
             );
+        });
+    });
+
+    describe('generateMasterPattern', () => {
+        describe('with a selected list of Providers', () => {
+            it('returns a master Regex pattern', () => {
+                const pattern = generateMasterPattern(['Snowplow', 'Krux']);
+                expect(pattern).to.eql(/(\/i\?.*tv=js-\d)|beacon\.krxd\.net\/pixel\.gif/);
+            });
+        });
+    });
+
+    describe('matchesBroadly', () => {
+        const masterPattern = generateMasterPattern('Snowplow', 'Krux', 'Rubicon');
+
+        describe('with a correct match', () => {
+            const snowplowCall = path([0, 'url'] , matchedUrls);
+            it('returns true', () => {
+                expect(matchesBroadly(snowplowCall, masterPattern)).to.eql(true);
+            });
+        });
+
+        describe('with an incorrect match', () => {
+            it('returns false', () => {
+                expect(matchesBroadly('http://google.com', masterPattern)).to.eql(false);
+            });
         });
     });
 });

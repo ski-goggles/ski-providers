@@ -2,7 +2,7 @@
 
 import type { ProviderCanonicalName, Provider } from './types';
 import * as Providers from './providers';
-import { values, find, path, isNil } from 'ramda';
+import { values, find, path, isNil, filter, contains, join, map } from 'ramda';
 
 export const lookup = (name: ProviderCanonicalName): ?Provider => {
     return find(
@@ -18,4 +18,25 @@ export const lookupByUrl = (url: string) : (Provider | null) => {
     );
 
     return isNil(provider) ? null : provider;
+};
+
+export const matchesBroadly = (url: string, regexPattern: RegExp): bool => {
+    return !!(url.match(regexPattern));
+};
+
+export const generateMasterPattern = (selectedProviders: Array<ProviderCanonicalName>) : RegExp => {
+    const filtered = filter(
+        (p: Provider) => contains(p.canonicalName, selectedProviders),
+        values(Providers)
+    );
+
+    let pattern = join(
+        '|',
+        map(
+            path(['pattern', 'source']),
+            filtered
+        )
+    );
+
+    return new RegExp(pattern);
 };
