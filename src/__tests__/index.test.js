@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { SkiProviders, SkiProviderHelpers } from '../index';
-import { keys } from 'ramda';
 
 describe('Smoke Test', () => {
     describe('SkiProviders', () => {
