@@ -16,7 +16,7 @@ const GoogleAnalytics: Provider = {
     canonicalName: 'GoogleAnalytics',
     displayName: 'Google Analytics',
     logo: 'google-analytics.png',
-    pattern: /\/r\/collect\?v/,
+    pattern: /collect\?v=/,
     transformer: transformer
 };
 
