@@ -20,6 +20,10 @@ export const matchedUrls = [
         provider: 'Rubicon'
     },
     {
+        url: 'https://www.google-analytics.com/r/collect?v=1&_v=j65&a=1436277003&t=pageview&_s=1&dl=http%3A%2F%2Flocalhost%2F&ul=en-gb&de=UTF-8&dt=title&sd=24-bit&sr=2560x1440&vp=818x953&je=0&fl=27.0%20r0&_u=AACAAMABI~&jid=559445413&gjid=823468754&cid=350393969.1510716497&tid=UA-107409871-1&_gid=1942704963.1510716497&_r=1&z=1049569071',
+        provider: 'Google Analytics'
+    },
+    {
         url: 'https://www.google.com/',
         provider: null
     }
