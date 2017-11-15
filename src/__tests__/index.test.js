@@ -1,11 +1,21 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { SkiProviders, SkiProviderHelpers } from '../index';
+import { keys } from 'ramda';
 
 describe('Smoke Test', () => {
     describe('SkiProviders', () => {
         it('is exported correctly', () => {
-            expect(SkiProviders.Snowplow.canonicalName).to.eql('Snowplow');
+            expect(SkiProviders).to.contain.all.keys(
+                [
+                    'Snowplow',
+                    'Krux',
+                    'AdobeAnalyticsAppMeasurement',
+                    'Rubicon',
+                    'Nielsen',
+                    'GoogleAnalytics'
+                ]
+            );
         });
     });
 
