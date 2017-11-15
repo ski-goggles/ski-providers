@@ -22,6 +22,6 @@ export type Provider = {|
   transformer: (WebRequestData) => WebRequestData
 |};
 
-export type ProviderCanonicalName = 'Snowplow' | 'AdobeAnalyticsAppMeasurement' | 'Nielsen' | 'Krux' | 'Rubicon';
+export type ProviderCanonicalName = 'Snowplow' | 'AdobeAnalyticsAppMeasurement' | 'Nielsen' | 'Krux' | 'Rubicon' | 'GoogleAnalytics';
 
 export type Version = string;
