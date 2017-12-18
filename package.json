@@ -4,49 +4,35 @@
   "description": "Analytics Providers for Ski Goggles and related projects",
   "author": "prem.pillai@gmail.com",
   "license": "MIT",
-  "repository": "https://github.com/ski-goggles/ski-providers",
-  "homepage": "https://github.com/ski-goggles/ski-providers",
+  "repository": "https://github.com/ski-gear/ski-providers",
+  "homepage": "https://github.com/ski-gear/ski-providers",
   "files": [
     "dist",
     "assets"
   ],
   "main": "dist/index.js",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0",
+    "@types/chai": "^4.0.10",
+    "@types/mocha": "^2.2.44",
+    "@types/ramda": "^0.25.8",
     "chai": "^4.1.2",
-    "eslint": "^4.5.0",
-    "eslint-plugin-flowtype": "^2.35.0",
-    "eslint-plugin-react": "^7.3.0",
-    "flow-bin": "^0.53.1",
-    "flow-copy-source": "^1.2.1",
-    "flow-typed": "^2.2.0",
-    "flowtype-loader": "^0.2.2",
     "mocha": "^3.5.3",
+    "ts-node": "^4.0.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2",
     "yarn": "^1.2.1"
   },
   "dependencies": {
     "moment": "^2.18.1",
     "querystring": "^0.2.0",
     "ramda": "^0.24.1",
-    "url": "^0.11.0"
-  },
-  "babel": {
-    "presets": [
-      "env"
-    ]
+    "url": "^0.11.0",
+    "when-switch": "^0.2.0"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register \"src/**/*.test.js\"",
-    "build": "yarn babel-build && yarn flow-build",
-    "babel-build": "babel src/ -d dist --ignore '**/__tests__/*'",
-    "flow-build": "flow gen-flow-files src/ --out-dir dist/",
-    "release": "yarn build && yarn publish"
+    "lint": "tslint -p . --fix",
+    "test": "yarn lint && mocha -r ts-node/register -r source-map-support/register 'src/**/*.test.ts' --timeout=10000",
+    "compile": "tsc",
+    "release": "yarn compile && yarn test && yarn version && yarn publish"
   }
 }

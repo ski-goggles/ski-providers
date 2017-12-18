@@ -1,6 +1,6 @@
 // @flow
 
-import type { ProviderCanonicalName, Provider } from './types';
+import { ProviderCanonicalName, Provider } from './types';
 import * as Providers from './providers';
 import { values, find, path, isNil, filter, contains, join, map } from 'ramda';
 

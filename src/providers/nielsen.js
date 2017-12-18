@@ -1,5 +1,5 @@
 // @flow
-import type { Provider, WebRequestParam, WebRequestData } from '../types';
+import { Provider, WebRequestParam, WebRequestData } from '../types';
 import { map, assoc, prop, sortBy } from 'ramda';
 import { labelReplacerFromDictionary, setTitle } from '../private_helpers.js';
 
