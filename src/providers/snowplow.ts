@@ -1,19 +1,18 @@
-// @flow
-import { Provider, WebRequestParam, WebRequestData } from '../types';
-import { map, contains, pathOr, find, assoc, sortBy, prop } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../private_helpers.js';
+import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from '../types/Types';
+import { map, contains, pathOr, find, assoc, sortBy, prop, propEq, isNil, propOr } from 'ramda';
+import { labelReplacerFromDictionary, setTitle } from '../PrivateHelpers';
+import when from "when-switch";
 
 const EVENT_PAYLOAD = 'Event Payload';
 const EVENT = 'Event';
 
 const transformer = (data: WebRequestData): WebRequestData => {
-    // $FlowFixMe
-    const params = sortBy(prop('label'), map(transform, data.params));
+    const params: WebRequestParam[] = sortBy(prop('label'), map(transform, data.params));
     const dataWithTitle = setTitle(getEventName(params), data);
     return assoc('params', params, dataWithTitle);
 };
 
-const Snowplow: Provider = {
+export const Snowplow: Provider = {
     canonicalName: 'Snowplow',
     displayName: 'Snowplow',
     logo: 'snowplow.png',
@@ -21,39 +20,34 @@ const Snowplow: Provider = {
     transformer: transformer
 };
 
-const getEventName = (params: Array<WebRequestParam>) : string => {
-    const row = getEventRow(params) || {};
-    // $FlowFixMe
-    const eventType = prop('value', row);
-    switch (eventType) {
-    case 'pv':
-        return 'Page View';
-    case 'ue':
-        return getTitleFromUePx(params);
-    default:
-        return 'Unknown Event';
-    }
+const getEventName = (params: Array<WebRequestParam>): string => {
+  const unknownEvent = "Unknown Event";
+
+  const row = getEventRow(params);
+  if (isNil(row)) return unknownEvent;
+
+  const eventType = prop("value", row);
+
+  return when(eventType)
+    .is("pv", "Page View")
+    .is("ue", getTitleFromUePx(params))
+    .else(unknownEvent);
 };
 
-const getEventRow = (params: Array<WebRequestParam>) : ?WebRequestParam => {
+const getEventRow = (params: WebRequestParam[]) : WebRequestParam | undefined => {
     return find(
-        // $FlowFixMe
-        e => prop('label', e) == EVENT,
+        e => propEq('label', EVENT, e),
         params
     );
 };
 
 const getTitleFromUePx = (params: Array<WebRequestParam>) : string => {
-    // Could go wrong in multiple ways
     try {
         const ue_px_row = find(
-            // $FlowFixMe
-            e => prop('label', e) == EVENT_PAYLOAD,
+            e => propEq('label', EVENT_PAYLOAD, e),
             params
         );
-        // $FlowFixMe
-        const json = JSON.parse(prop('value', ue_px_row));
-        // $FlowFixMe
+        const json = JSON.parse(propOr({}, 'value', ue_px_row));
         return pathOr('Unknown Event', ['data', 'data', 'event_name'], json);
     } catch (e) {
         console.debug('Unpareable ue_px row from: ',  params);
@@ -81,7 +75,10 @@ const formattedJSON = (data: string): string => {
         parsed = JSON.parse(payload);
     }
     catch (e) {
-        parsed = { bad: 'data'};
+        parsed = { 
+            error: 'Could not parse data',
+            context: data
+        };
     }
     const json = JSON.stringify(parsed, null, 4);
     return json;
@@ -105,10 +102,8 @@ const labelReplacer = (label: string): string => {
     return labelReplacerFromDictionary(label, LabelDictionary);
 };
 
-const LabelDictionary : {[string]: string} = {
+const LabelDictionary: LabelDictionary = {
     'ue_px': EVENT_PAYLOAD,
     'cx': 'Context Payload',
     'e': EVENT
 };
-
-export { Snowplow };

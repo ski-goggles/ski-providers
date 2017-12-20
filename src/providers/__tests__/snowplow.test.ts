@@ -1,13 +1,14 @@
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import "mocha";
 import { Snowplow } from '../snowplow';
 import { path, map, prop } from 'ramda';
 import { snowplowFixture } from './fixtures';
+import { WebRequestData } from "../../types/Types";
 
 describe('Snowplow', () => {
     describe('Title', () => {
         describe('When the data contains \'ue_px\' param', () => {
-            const webRequestData = {
+            const webRequestData: WebRequestData = {
                 meta: {},
                 params: [
                     { label: 'ue_px', value: snowplowFixture.ue_px, valueType: 'json' },
@@ -21,7 +22,7 @@ describe('Snowplow', () => {
         });
 
         describe('When the data does not contain \'ue_px\' param', () => {
-            const webRequestData = {
+            const webRequestData: WebRequestData = {
                 meta: {},
                 params: [
                     { label: 'e', value: 'pv', valueType: 'string' }
@@ -39,7 +40,7 @@ describe('Snowplow', () => {
             map((param) => {
                 describe(`When the data contains ${param} param`, () => {
                     describe('with a good payload', () => {
-                        const webRequestData = {
+                        const webRequestData: WebRequestData = {
                             meta: {},
                             params: [
                                 { label: param, value: prop(param, snowplowFixture), valueType: 'json' }
@@ -53,7 +54,7 @@ describe('Snowplow', () => {
                     });
 
                     describe('with a bad payload', () => {
-                        const webRequestData = {
+                        const webRequestData: WebRequestData = {
                             meta: {},
                             params: [
                                 { label: param, value: 'not-a-good-payload', valueType: 'json' }
@@ -66,9 +67,8 @@ describe('Snowplow', () => {
                         });
 
                         it('returns a JSON object indicating an error message', () => {
-                            expect(JSON.parse(
-                                path(['params', 0, 'value'], transformer())
-                            )).to.eql({ bad: 'data' });
+                            const parsed = JSON.parse(path(['params', 0, 'value'], transformer()))
+                            expect(parsed).to.contain({ error: 'Could not parse data' });
                         });
                     });
                 });
@@ -77,7 +77,7 @@ describe('Snowplow', () => {
     });
 
     describe('When a label is present that needs replacing', () => {
-        const webRequestData = {
+        const webRequestData: WebRequestData = {
             meta: {},
             params: [
                 { label: 'cx', value: 'test', valueType: 'json' },
