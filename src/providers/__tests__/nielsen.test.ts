@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { Nielsen } from "../nielsen";
+import { Nielsen } from "../Nielsen";
 import { path } from "ramda";
 import { WebRequestData } from "../../types/Types";
 

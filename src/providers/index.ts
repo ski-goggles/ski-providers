@@ -1,6 +1,6 @@
-export { Snowplow } from './snowplow';
-export { Krux } from './krux';
-export { AdobeAnalyticsAppMeasurement } from './adobe_analytics_app_measurement';
-export { Rubicon } from './rubicon';
-export { Nielsen } from './nielsen';
-export { GoogleAnalytics } from './google_analytics';
+export { Snowplow } from './Snowplow';
+export { Krux } from './Krux';
+export { AdobeAnalyticsAppMeasurement } from './AdobeAnalyticsAppMeasurement';
+export { Rubicon } from './Rubicon';
+export { Nielsen } from './Nielsen';
+export { GoogleAnalytics } from './GoogleAnalytics';

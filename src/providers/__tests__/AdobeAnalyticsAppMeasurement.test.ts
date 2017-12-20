@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { AdobeAnalyticsAppMeasurement } from "../adobe_analytics_app_measurement";
+import { AdobeAnalyticsAppMeasurement } from "../AdobeAnalyticsAppMeasurement";
 import { path } from "ramda";
 import { WebRequestData } from "../../types/Types";
 

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { Snowplow } from "../snowplow";
+import { Snowplow } from "../Snowplow";
 import { path, map, prop } from "ramda";
 import { snowplowFixture } from "./fixtures";
 import { WebRequestData } from "../../types/Types";

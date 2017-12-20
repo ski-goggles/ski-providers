@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Krux } from '../krux';
+import { Krux } from '../Krux';
 import { path } from 'ramda';
 import { WebRequestData } from '../../types/Types';
 

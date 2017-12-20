@@ -1,13 +1,13 @@
-// @flow
-import { Provider, WebRequestParam, WebRequestData } from '../types';
-import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../private_helpers.js';
+import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from '../types/Types';
+import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo, isNil } from 'ramda';
+import { labelReplacerFromDictionary, setTitle } from '../PrivateHelpers';
 
 const EVENT_ACTION = 'Event Action';
+const HIT_TYPE = 'Hit Type';
+const PAGEVIEW = 'pageview';
 
 const transformer = (data: WebRequestData): WebRequestData => {
-    // $FlowFixMe
-    const params = sortBy(prop('label'), map(transform, data.params));
+    const params: WebRequestParam[] = sortBy(prop('label'), map(transform, data.params));
     const dataWithTitle = setTitle(getEventName(params), data);
     return assoc('params', params, dataWithTitle);
 };
@@ -16,26 +16,24 @@ const GoogleAnalytics: Provider = {
     canonicalName: 'GoogleAnalytics',
     displayName: 'Google Analytics',
     logo: 'google-analytics.png',
-    pattern: /collect\?v=/,
-    transformer: transformer
+    pattern: /google\-analytics.com\/collect\?/,
+    transformer
 };
 
-const getEventName = (params: Array<WebRequestParam>) : string | null => {
-    // $FlowFixMe
-    const isCustomEvent = contains(EVENT_ACTION, pluck('label', params));
-    const eventRow = defaultTo(
-        {}, find(
-            e => e.label == EVENT_ACTION,
-            params
-        )
-    );
+const getEventName = (params: WebRequestParam[]) : string | null => {
+    const hitTypeRow = defaultTo({}, find(e => e.label == HIT_TYPE, params));
+    const hitType: string = propOr(null, 'value', hitTypeRow);
 
-    // $FlowFixMe
-    const eventName = propOr('Unknown Event', 'value', eventRow);
-    if(isCustomEvent){
+    const eventRow = defaultTo({}, find(e => e.label == EVENT_ACTION, params));
+    const eventName: string = propOr(null, 'value', eventRow);
+
+    if(hitType === PAGEVIEW){
+        return 'Page Load';
+    }
+    else if(!isNil(eventName)) {
         return eventName;
     } else {
-        return 'Page Load';
+        return 'Unknown Event';
     }
 };
 
@@ -49,7 +47,7 @@ const labelReplacer = (label: string): string => {
     return labelReplacerFromDictionary(label, LabelDictionary);
 };
 
-const LabelDictionary : {[string]: string} = {
+const LabelDictionary : LabelDictionary = {
     v: 'Protocol Version'
     , tid: 'Tracking ID'
     , aip: 'Anonymize IP'
@@ -73,7 +71,7 @@ const LabelDictionary : {[string]: string} = {
     , ul: 'User Language'
     , je: 'Java Enabled'
     , fl: 'Flash Version'
-    , t: 'Hit Type'
+    , t: HIT_TYPE
     , ni: 'Non-Interaction Hit'
     , dl: 'Document location URL'
     , dh: 'Document Host Name'
