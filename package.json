@@ -11,6 +11,7 @@
     "assets"
   ],
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "devDependencies": {
     "@types/chai": "^4.0.10",
     "@types/mocha": "^2.2.44",
