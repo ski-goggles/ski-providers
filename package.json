@@ -1,6 +1,6 @@
 {
   "name": "ski-providers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Analytics Providers for Ski Goggles and related projects",
   "author": "prem.pillai@gmail.com",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "assets"
   ],
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index",
   "devDependencies": {
     "@types/chai": "^4.0.10",
     "@types/mocha": "^2.2.44",
