@@ -1,13 +1,14 @@
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { Krux } from '../krux';
+import 'mocha';
+import { Krux } from '../Krux';
 import { path } from 'ramda';
+import { WebRequestData } from '../../types/Types';
 
 describe('Krux', () => {
     describe('transformer', () => {
         describe('Title', () => {
             describe('When the data contains \'fired\' param', () => {
-                const webRequestData = {
+                const webRequestData: WebRequestData = {
                     meta: {},
                     params: [
                         { label: 'fired', value: 'test', valueType: 'string' }
@@ -20,7 +21,7 @@ describe('Krux', () => {
             });
 
             describe('When the data does not contain \'fired\' param', () => {
-                const webRequestData = {
+                const webRequestData: WebRequestData = {
                     meta: {},
                     params: [
                         { label: 'events', value: 'event1', valueType: 'string' }
@@ -35,7 +36,7 @@ describe('Krux', () => {
 
         describe('Data Layer', () => {
             describe('When a \'_k\' property is present', () => {
-                const webRequestData = {
+                const webRequestData: WebRequestData = {
                     meta: {},
                     params: [
                         { label: '_k1', value: 'test', valueType: 'string' },
@@ -51,7 +52,7 @@ describe('Krux', () => {
 
 
             describe('When a \'_kpl\' property is present', () => {
-                const webRequestData = {
+                const webRequestData: WebRequestData = {
                     meta: {},
                     params: [
                         { label: '_kpl1', value: 'test', valueType: 'string' },
@@ -66,7 +67,7 @@ describe('Krux', () => {
             });
 
             describe('When a label is present that needs replacing', () => {
-                const webRequestData = {
+                const webRequestData: WebRequestData = {
                     meta: {},
                     params: [
                         { label: 'source', value: 'test', valueType: 'string' },
