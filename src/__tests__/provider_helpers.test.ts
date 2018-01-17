@@ -1,9 +1,10 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
-import { lookup, lookupByUrl, generateMasterPattern, matchesBroadly } from '../provider_helpers';
+import { expect } from "chai";
+import "mocha";
+import { lookup, lookupByUrl, generateMasterPattern, matchesBroadly } from '../ProviderHelpers';
 import { Snowplow } from '../providers/snowplow';
 import { map, propOr, path } from 'ramda';
 import { matchedUrls } from './fixtures';
+import { ProviderCanonicalName } from "../types/Types";
 
 describe('Providers', () => {
     describe('Helpers', () => {
@@ -11,14 +12,14 @@ describe('Providers', () => {
             describe('when a valid Provider Canonical Name is provided', () => {
                 it('returns the correct Provider', () => {
                     const returned = lookup('Snowplow');
-                    expect(returned).to.eq(Snowplow);
+                    expect(returned.canonicalName).to.eq(Snowplow.canonicalName);
                 });
             });
 
             describe('when an invalid Provider Canonical Name is provided', () => {
-                it('\'undefined\' is returned', () => {
-                    const returned = lookup('Farmplow');
-                    expect(returned).to.eq(undefined);
+                it('\'null\' is returned', () => {
+                    const returned = lookup('Farmplow' as ProviderCanonicalName);
+                    expect(returned).to.eq(null);
                 });
             });
         });
@@ -48,10 +49,10 @@ describe('Providers', () => {
     });
 
     describe('matchesBroadly', () => {
-        const masterPattern = generateMasterPattern('Snowplow', 'Krux', 'Rubicon');
+        const masterPattern = generateMasterPattern(['Snowplow', 'Krux', 'Rubicon']);
 
         describe('with a correct match', () => {
-            const snowplowCall = path([0, 'url'] , matchedUrls);
+            const snowplowCall = path([0, 'url'] , matchedUrls) as string;
             it('returns true', () => {
                 expect(matchesBroadly(snowplowCall, masterPattern)).to.eql(true);
             });

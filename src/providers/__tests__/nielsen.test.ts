@@ -8,7 +8,7 @@ describe("Nielsen", () => {
   describe("transformer", () => {
     describe("Title", () => {
       const webRequestData: WebRequestData = {
-        meta: {},
+        meta: { requestUrl: "https://google.com" },
         params: [{ label: "test", value: "test", valueType: "string" }],
       };
       const transformed = Nielsen.transformer(webRequestData);
@@ -19,7 +19,7 @@ describe("Nielsen", () => {
 
     describe("When a label is present that needs replacing", () => {
       const webRequestData: WebRequestData = {
-        meta: {},
+        meta: { requestUrl: "https://google.com" },
         params: [{ label: "lg", value: "test", valueType: "string" }],
       };
       const transformed = Nielsen.transformer(webRequestData);
