@@ -1,6 +1,7 @@
 export type WebRequestData = {
-  meta?: {
-    title?: string
+  meta: {
+    title?: string;
+    requestUrl: string;
   },
   params: WebRequestParam[]
 };

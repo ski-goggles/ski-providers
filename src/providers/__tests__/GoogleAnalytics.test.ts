@@ -9,7 +9,9 @@ describe("GoogleAnalytics", () => {
     describe("Title", () => {
       describe("when the hit type is set", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: {
+            requestUrl: "https://google.com",
+          },
           params: [{ label: "t", value: "pageview", valueType: "string" }],
         };
         const transformed = GoogleAnalytics.transformer(webRequestData);
@@ -20,7 +22,9 @@ describe("GoogleAnalytics", () => {
 
       describe("when the hit type is not set", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: {
+            requestUrl: "https://google.com",
+          },
           params: [{ label: "ea", value: "Awesome", valueType: "string" }],
         };
         const transformed = GoogleAnalytics.transformer(webRequestData);
@@ -31,7 +35,7 @@ describe("GoogleAnalytics", () => {
 
       describe("when the hit type and event action are not set", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [{ label: "something", value: "Awesome", valueType: "string" }],
         };
         const transformed = GoogleAnalytics.transformer(webRequestData);
@@ -44,7 +48,7 @@ describe("GoogleAnalytics", () => {
     describe("Data Layer", () => {
       describe("When a label is present that needs replacing", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [{ label: "tid", value: "awesome-tracking-id", valueType: "string" }],
         };
         const transformed = GoogleAnalytics.transformer(webRequestData);

@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import "mocha";
 import { SkiProviders, SkiProviderHelpers } from '../index';
 
 describe('Smoke Test', () => {

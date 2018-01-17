@@ -24,6 +24,10 @@ export const matchedUrls = [
         provider: 'Google Analytics'
     },
     {
+        url: 'https://www.google-analytics.com/collect?v=1&_v=j66&a=413443498&t=pageview&_s=1&dl=http%3A%2F%2Flocalhost%2Fanother-page.html&dp=TAGMAN%20TESTING%20-%20ANOTHER%20PAGE&ul=en-gb&de=UTF-8&dt=TAGMAN%20TESTING%20-%20ANOTHER%20PAGE&sd=24-bit&sr=2560x1080&vp=1392x1006&je=0&fl=28.0%20r0&_u=AACAAEAB~&jid=&gjid=&cid=1802478637.1500026114&tid=UA-107409871-1&_gid=2138351126.1516018313&z=1187171673',
+        provider: 'Google Analytics'
+    },
+    {
         url: 'https://www.google.com/',
         provider: null
     }

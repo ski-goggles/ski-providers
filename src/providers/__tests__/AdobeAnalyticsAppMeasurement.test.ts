@@ -10,7 +10,7 @@ describe("Adobe Analytics Manager", () => {
       describe("When the data contains 'pe' param", () => {
         describe("When no events are populated", () => {
           const webRequestData: WebRequestData = {
-            meta: {},
+            meta: { requestUrl: "https://google.com" },
             params: [{ label: "pe", value: "link_o", valueType: "string" }],
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);
@@ -21,7 +21,7 @@ describe("Adobe Analytics Manager", () => {
 
         describe("When an event is populated", () => {
           const webRequestData: WebRequestData = {
-            meta: {},
+            meta: { requestUrl: "https://google.com" },
             params: [
               { label: "pe", value: "link_o", valueType: "string" },
               { label: "events", value: "event1", valueType: "string" },
@@ -36,7 +36,7 @@ describe("Adobe Analytics Manager", () => {
 
       describe("When the data does not contain 'pe' param", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [{ label: "pet", value: "link_o", valueType: "string" }],
         };
         const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);
@@ -45,8 +45,8 @@ describe("Adobe Analytics Manager", () => {
         });
 
         describe("and contains events data", () => {
-        const webRequestData: WebRequestData = {
-            meta: {},
+          const webRequestData: WebRequestData = {
+            meta: { requestUrl: "https://google.com" },
             params: [
               { label: "pet", value: "link_o", valueType: "string" },
               { label: "events", value: "event1", valueType: "string" },
@@ -63,7 +63,7 @@ describe("Adobe Analytics Manager", () => {
     describe("Evars and Props", () => {
       describe("When an evar/v property is present with the correct category", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [
             { label: "v1", value: "test", valueType: "string" },
             { label: "evar2", value: "test2", valueType: "string" },
@@ -79,7 +79,7 @@ describe("Adobe Analytics Manager", () => {
 
       describe("When an prop/c property is present with the correct category", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [
             { label: "c1", value: "test", valueType: "string" },
             { label: "prop2", value: "test2", valueType: "string" },
@@ -95,7 +95,7 @@ describe("Adobe Analytics Manager", () => {
 
       describe("When a label is present that needs replacing", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [{ label: "ns", value: "test", valueType: "string" }],
         };
         const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);

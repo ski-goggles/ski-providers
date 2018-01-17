@@ -1,14 +1,14 @@
-import { expect } from 'chai';
-import 'mocha';
-import { Rubicon } from '../Rubicon';
-import { path } from 'ramda';
-import { WebRequestData } from '../../types/Types';
+import { expect } from "chai";
+import "mocha";
+import { Rubicon } from "../Rubicon";
+import { path } from "ramda";
+import { WebRequestData } from "../../types/Types";
 
 describe("Rubicon", () => {
   describe("transformer", () => {
     describe("Title", () => {
       const webRequestData: WebRequestData = {
-        meta: {},
+        meta: { requestUrl: "https://google.com" },
         params: [{ label: "fired", value: "test", valueType: "string" }],
       };
       const transformed = Rubicon.transformer(webRequestData);
@@ -20,7 +20,7 @@ describe("Rubicon", () => {
     describe("Data Layer", () => {
       describe("When a 'tg_' property is present", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [
             { label: "tg_i", value: "test", valueType: "string" },
             { label: "u", value: "test2", valueType: "string" },
@@ -35,7 +35,7 @@ describe("Rubicon", () => {
 
       describe("When a label is present that needs replacing", () => {
         const webRequestData: WebRequestData = {
-          meta: {},
+          meta: { requestUrl: "https://google.com" },
           params: [{ label: "source", value: "test", valueType: "string" }],
         };
         const transformed = Rubicon.transformer(webRequestData);
