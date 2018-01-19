@@ -1,12 +1,33 @@
 import { expect } from "chai";
 import "mocha";
 import { Snowplow } from "../Snowplow";
-import { path, map, prop } from "ramda";
+import { path, map, prop, mapObjIndexed } from "ramda";
 import { snowplowFixture } from "./fixtures";
 import { WebRequestData } from "../../types/Types";
 
 describe("Snowplow", () => {
   describe("Title", () => {
+    const eventTypes = {
+      pv: "Page View",
+      pp: "Page Ping",
+      tr: "Ecommerce transaction",
+      ti: "Ecommerce transaction",
+      se: "Custom Structured Event",
+    };
+
+    mapObjIndexed((eventTitle, eventKey) => {
+      describe(`when event type is set as ${eventKey}`, () => {
+        const webRequestData: WebRequestData = {
+          meta: { requestUrl: "https://google.com" },
+          params: [{ label: "e", value: eventKey, valueType: "string" }],
+        };
+        const transformed = Snowplow.transformer(webRequestData);
+        it(`returns the event type as ${eventTitle} `, () => {
+          expect(path(["meta", "title"], transformed)).to.eql(eventTitle);
+        });
+      });
+    }, eventTypes);
+
     describe("When the data contains 'ue_px' param", () => {
       const webRequestData: WebRequestData = {
         meta: { requestUrl: "https://google.com" },
