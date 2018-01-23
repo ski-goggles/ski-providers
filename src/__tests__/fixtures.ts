@@ -16,6 +16,10 @@ export const matchedUrls = [
         provider: 'Krux'
     },
     {
+        url: 'https://beacon.krxd.net/event.gif?event_id=J05pfnrZ',
+        provider: 'Krux'
+    },
+    {
         url: 'https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id=9607&site_id=19032&zone_id=520216&size_id=15&p_pos=btf&rp_floor=0.01&rp_secure=0&tk_flint=pbjs_lite_v0.28.0&p_screen_res=2560x1080&kw=%5Bobject%20Object%5D&tg_i.site=rea&tg_i.state=vic&tg_i.price=500k_600k&tg_i.ad_area=sold.details&tg_i.postcode=3190&tg_i.suburb=highett&tg_i.region=bayside&tg_i.property_type=apartment&tg_i.ad_position=button3&tg_i.beds=2&tg_i.bedmin=&tg_i.bedmax=&tg_i.postcode_group=&rand=0.8824983433974729&rf=https%3A%2F%2Fwww.realestate.com.au%2Fsold%2Fproperty-apartment-vic-highett-124470098',
         provider: 'Rubicon'
     },

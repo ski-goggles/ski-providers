@@ -13,7 +13,7 @@ export const Krux: Provider = {
   canonicalName: "Krux",
   displayName: "Krux",
   logo: "krux.png",
-  pattern: /beacon\.krxd\.net\/pixel\.gif/,
+  pattern: /beacon\.krxd\.net\/(pixel|event)\.gif/,
   transformer,
 };
 
