@@ -60,7 +60,7 @@ describe("Adobe Analytics Manager", () => {
       });
     });
 
-    describe("Evars and Props", () => {
+    describe("Evars, Props, and Lists", () => {
       describe("When an evar/v property is present with the correct category", () => {
         const webRequestData: WebRequestData = {
           meta: { requestUrl: "https://google.com" },
@@ -72,7 +72,7 @@ describe("Adobe Analytics Manager", () => {
         const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);
         it("sets the label with a readble prefix - eVar", () => {
           expect(path(["params", 0, "label"], transformed)).to.eql("eVar1");
-          expect(path(["params", 0, "category"], transformed)).to.eql("Evars & Props");
+          expect(path(["params", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
           expect(path(["params", 1, "label"], transformed)).to.eql("eVar2");
         });
       });
@@ -88,8 +88,24 @@ describe("Adobe Analytics Manager", () => {
         const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);
         it("sets the label with a readble prefix - eVar", () => {
           expect(path(["params", 0, "label"], transformed)).to.eql("Prop1");
-          expect(path(["params", 0, "category"], transformed)).to.eql("Evars & Props");
+          expect(path(["params", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
           expect(path(["params", 1, "label"], transformed)).to.eql("Prop2");
+        });
+      });
+
+      describe("When an list/l property is present with the correct category", () => {
+        const webRequestData: WebRequestData = {
+          meta: { requestUrl: "https://google.com" },
+          params: [
+            { label: "l1", value: "test", valueType: "string" },
+            { label: "list2", value: "test2", valueType: "string" },
+          ],
+        };
+        const transformed = AdobeAnalyticsAppMeasurement.transformer(webRequestData);
+        it("sets the label with a readble prefix - list", () => {
+          expect(path(["params", 0, "label"], transformed)).to.eql("List1");
+          expect(path(["params", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
+          expect(path(["params", 1, "label"], transformed)).to.eql("List2");
         });
       });
 
