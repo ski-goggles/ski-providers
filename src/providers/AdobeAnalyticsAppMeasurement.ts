@@ -38,12 +38,13 @@ const transform = (datum: WebRequestParam): WebRequestParam => {
   return { label: label, value: datum.value, valueType: "string", category };
 };
 
-const DATA_LABEL = "Evars & Props";
+const DATA_LABEL = "Evars, Props, and Lists";
 
 const categorize = (label: string): string | null => {
   return when(label)
     .match(/^(v|evar)(\d+)$/i, DATA_LABEL)
     .match(/^(c|prop)(\d+)$/i, DATA_LABEL)
+    .match(/^(l|list)(\d+)$/i, DATA_LABEL)
     .else(null);
 };
 
@@ -51,6 +52,7 @@ const labelReplacer = (label: string): string => {
   return when(label)
     .match(/^(v|evar)(\d+)$/i, `eVar${RegExp.$2}`)
     .match(/^(c|prop)(\d+)$/i, `Prop${RegExp.$2}`)
+    .match(/^(l|list)(\d+)$/i, `List${RegExp.$2}`)
     .else(labelReplacerFromDictionary(label, LabelDictionary));
 };
 
