@@ -16,7 +16,7 @@ export const AdobeAnalyticsAppMeasurement: Provider = {
   canonicalName: "AdobeAnalyticsAppMeasurement",
   displayName: "Adobe Analytics AppMeasurement",
   logo: "adobe-analytics-app-measurement.png",
-  pattern: /\/b\/ss\/|2o7/,
+  pattern: /\/b\/ss\//,
   transformer: transformer,
 };
 
