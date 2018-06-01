@@ -1,15 +1,16 @@
-import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from '../types/Types';
+import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from '../types/Types';
 import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo, isNil } from 'ramda';
 import { labelReplacerFromDictionary, setTitle } from '../PrivateHelpers';
+import { createFormattedDataFromGet } from '../Parser';
 
 const EVENT_ACTION = 'Event Action';
 const HIT_TYPE = 'Hit Type';
 const PAGEVIEW = 'pageview';
 
-const transformer = (data: WebRequestData): WebRequestData => {
-    const params: WebRequestParam[] = sortBy(prop('label'), map(transform, data.params));
-    const dataWithTitle = setTitle(getEventName(params), data);
-    return assoc('params', params, dataWithTitle);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
+  const formatted: FormattedDataItem[] = parse(rwrd);
+  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  return setTitle(getEventName(data), data);
 };
 
 const GoogleAnalytics: Provider = {
@@ -20,7 +21,7 @@ const GoogleAnalytics: Provider = {
     transformer
 };
 
-const getEventName = (params: WebRequestParam[]) : string | null => {
+const getEventName = (params: FormattedDataItem[]) : string | null => {
     const hitTypeRow = defaultTo({}, find(e => e.label == HIT_TYPE, params));
     const hitType: string = propOr(null, 'value', hitTypeRow);
 
@@ -37,10 +38,21 @@ const getEventName = (params: WebRequestParam[]) : string | null => {
     }
 };
 
-const transform = (datum: WebRequestParam): WebRequestParam => {
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromGet(rwrd.requestParams)
+    case "POST":
+      // return map(createWebRequestParam, toPairs(rwrd.requestBody));
+    default:
+      return [];
+  }
+};
+
+const transform = (datum: FormattedDataItem): FormattedDataItem => {
     let category = 'Data';
     let label : string = labelReplacer(datum.label);
-    return { label: label, value: datum.value, valueType: 'string', category };
+    return { label: label, value: datum.value, formatting: 'string', category };
 };
 
 const labelReplacer = (label: string): string => {

@@ -1,15 +1,16 @@
-import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from "../types/Types";
+import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from "../types/Types";
 import { map, contains, pathOr, find, assoc, sortBy, prop, propEq, isNil, propOr } from "ramda";
 import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
 import when from "when-switch";
+import { createFormattedDataFromGet } from "../Parser";
 
 const EVENT_PAYLOAD = "Event Payload";
 const EVENT = "Event";
 
-const transformer = (data: WebRequestData): WebRequestData => {
-  const params: WebRequestParam[] = sortBy(prop("label"), map(transform, data.params));
-  const dataWithTitle = setTitle(getEventName(params), data);
-  return assoc("params", params, dataWithTitle);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
+  const formatted: FormattedDataItem[] = parse(rwrd);
+  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  return setTitle(getEventName(data), data);
 };
 
 export const Snowplow: Provider = {
@@ -20,7 +21,7 @@ export const Snowplow: Provider = {
   transformer: transformer,
 };
 
-const getEventName = (params: Array<WebRequestParam>): string => {
+const getEventName = (params: Array<FormattedDataItem>): string => {
   const unknownEvent = "Unknown Event";
 
   const row = getEventRow(params);
@@ -38,11 +39,11 @@ const getEventName = (params: Array<WebRequestParam>): string => {
     .else(unknownEvent);
 };
 
-const getEventRow = (params: WebRequestParam[]): WebRequestParam | undefined => {
+const getEventRow = (params: FormattedDataItem[]): FormattedDataItem | undefined => {
   return find(e => propEq("label", EVENT, e), params);
 };
 
-const getTitleFromUePx = (params: Array<WebRequestParam>): string => {
+const getTitleFromUePx = (params: Array<FormattedDataItem>): string => {
   try {
     const ue_px_row = find(e => propEq("label", EVENT_PAYLOAD, e), params);
     const json = JSON.parse(propOr({}, "value", ue_px_row));
@@ -53,15 +54,27 @@ const getTitleFromUePx = (params: Array<WebRequestParam>): string => {
   }
 };
 
-const transform = (datum: WebRequestParam): WebRequestParam => {
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromGet(rwrd.requestParams);
+    case "POST":
+      console.log(`POST support for ${Snowplow.canonicalName} is not implemented.`);
+      return [];
+    default:
+      return [];
+  }
+};
+
+const transform = (datum: FormattedDataItem): FormattedDataItem => {
   const category = categorize(datum.label);
   const label = labelReplacer(datum.label);
 
   if (contains(datum.label, ["cx", "ue_px"])) {
     const json = formattedJSON(datum.value);
-    return { label, value: json, valueType: "json", category };
+    return { label, value: json, formatting: "json", category };
   } else {
-    return { label, value: datum.value, valueType: datum.valueType, category };
+    return { label, value: datum.value, formatting: datum.formatting, category };
   }
 };
 

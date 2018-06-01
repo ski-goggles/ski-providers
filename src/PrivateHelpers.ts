@@ -1,15 +1,16 @@
-import { WebRequestData, LabelDictionary } from "./types/Types";
-import { propOr, lensPath, set } from "ramda";
+import { FormattedWebRequestData, LabelDictionary, FormattedDataItem, BasicKeyValueObject } from "./types/Types";
+import { propOr, lensPath, set, defaultTo } from "ramda";
 
-export const labelReplacerFromDictionary = (label: string, dictionary: LabelDictionary): string => {
+export const labelReplacerFromDictionary = (label: string, dictionary: BasicKeyValueObject): string => {
   return propOr(label, label, dictionary);
 };
 
-export const setTitle = (title: string | null, data: WebRequestData): WebRequestData => {
-  if (title) {
-    const lens = lensPath(["meta", "title"]);
-    return set(lens, title, data);
-  } else {
-    return data;
-  }
+export const setTitle = (t: string | null, data: FormattedDataItem[]): FormattedWebRequestData => {
+  const title = defaultTo("No Title", t) as string;
+  return {
+    meta: {
+      title,
+    },
+    data,
+  };
 };

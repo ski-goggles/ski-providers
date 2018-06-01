@@ -1,17 +1,18 @@
 import { expect } from "chai";
 import "mocha";
-import { Rubicon } from "../Rubicon";
 import { path } from "ramda";
-import { WebRequestData } from "../../types/Types";
+import { GetRequest } from "../../types/Types";
+import { Rubicon } from "../Rubicon";
 
 describe("Rubicon", () => {
   describe("transformer", () => {
     describe("Title", () => {
-      const webRequestData: WebRequestData = {
-        meta: { requestUrl: "https://google.com" },
-        params: [{ label: "fired", value: "test", valueType: "string" }],
+      const rwrd: GetRequest = {
+        url: "http://someurl.tld",
+        requestType: "GET",
+        requestParams: { fired: "test" },
       };
-      const transformed = Rubicon.transformer(webRequestData);
+      const transformed = Rubicon.transformer(rwrd);
       it("returns the correct event title", () => {
         expect(path(["meta", "title"], transformed)).to.eql("Ad Load Request");
       });
@@ -19,28 +20,27 @@ describe("Rubicon", () => {
 
     describe("Data Layer", () => {
       describe("When a 'tg_' property is present", () => {
-        const webRequestData: WebRequestData = {
-          meta: { requestUrl: "https://google.com" },
-          params: [
-            { label: "tg_i", value: "test", valueType: "string" },
-            { label: "u", value: "test2", valueType: "string" },
-          ],
+        const rwrd: GetRequest = {
+          url: "http://someurl.tld",
+          requestType: "GET",
+          requestParams: { tg_i: "test", u: "test2" },
         };
-        const transformed = Rubicon.transformer(webRequestData);
+        const transformed = Rubicon.transformer(rwrd);
         it("sets the correct category", () => {
-          expect(path(["params", 0, "category"], transformed)).to.eql("Data Layer");
-          expect(path(["params", 1, "category"], transformed)).to.eql(null);
+          expect(path(["data", 0, "category"], transformed)).to.eql("Data Layer");
+          expect(path(["data", 1, "category"], transformed)).to.eql(null);
         });
       });
 
       describe("When a label is present that needs replacing", () => {
-        const webRequestData: WebRequestData = {
-          meta: { requestUrl: "https://google.com" },
-          params: [{ label: "source", value: "test", valueType: "string" }],
+        const rwrd: GetRequest = {
+          url: "http://someurl.tld",
+          requestType: "GET",
+          requestParams: { source: "test", u: "test2" },
         };
-        const transformed = Rubicon.transformer(webRequestData);
+        const transformed = Rubicon.transformer(rwrd);
         it("sets the correct label", () => {
-          expect(path(["params", 0, "label"], transformed)).to.eql("Source");
+          expect(path(["data", 0, "label"], transformed)).to.eql("Source");
         });
       });
     });

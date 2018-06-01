@@ -1,30 +1,32 @@
 import { expect } from "chai";
 import "mocha";
-import { Nielsen } from "../Nielsen";
 import { path } from "ramda";
-import { WebRequestData } from "../../types/Types";
+import { GetRequest } from "../../types/Types";
+import { Nielsen } from "../Nielsen";
 
 describe("Nielsen", () => {
   describe("transformer", () => {
     describe("Title", () => {
-      const webRequestData: WebRequestData = {
-        meta: { requestUrl: "https://google.com" },
-        params: [{ label: "test", value: "test", valueType: "string" }],
+      const rwrd: GetRequest = {
+        url: "http://someurl.tld",
+        requestType: "GET",
+        requestParams: { test: "test" },
       };
-      const transformed = Nielsen.transformer(webRequestData);
+      const transformed = Nielsen.transformer(rwrd);
       it("returns the correct event title", () => {
         expect(path(["meta", "title"], transformed)).to.eql("Page View");
       });
     });
 
     describe("When a label is present that needs replacing", () => {
-      const webRequestData: WebRequestData = {
-        meta: { requestUrl: "https://google.com" },
-        params: [{ label: "lg", value: "test", valueType: "string" }],
+      const rwrd: GetRequest = {
+        url: "http://someurl.tld",
+        requestType: "GET",
+        requestParams: { lg: "test" },
       };
-      const transformed = Nielsen.transformer(webRequestData);
+      const transformed = Nielsen.transformer(rwrd);
       it("sets the correct label", () => {
-        expect(path(["params", 0, "label"], transformed)).to.eql("Language");
+        expect(path(["data", 0, "label"], transformed)).to.eql("Language");
       });
     });
   });
