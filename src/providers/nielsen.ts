@@ -1,11 +1,11 @@
-import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from "../types/Types";
-import { map, assoc, prop, sortBy } from "ramda";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { map, prop, sortBy } from "ramda";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
-const transformer = (data: WebRequestData): WebRequestData => {
-  const params = sortBy(prop("label"), map(transform, data.params));
-  const dataWithTitle = setTitle("Page View", data);
-  return assoc("params", params, dataWithTitle);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
+  const formatted: FormattedDataItem[] = parse(rwrd);
+  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  return setTitle("Page View", data);
 };
 
 export const Nielsen: Provider = {
@@ -16,10 +16,21 @@ export const Nielsen: Provider = {
   transformer,
 };
 
-const transform = (datum: WebRequestParam): WebRequestParam => {
+const transform = (datum: FormattedDataItem): FormattedDataItem => {
   let category = categorize(datum.label);
   let label: string = labelReplacer(datum.label);
-  return { label: label, value: datum.value, valueType: "string", category };
+  return { label: label, value: datum.value, formatting: "string", category };
+};
+
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromObject(rwrd.requestParams);
+    case "POST":
+      console.log(`POST support for ${Nielsen.canonicalName} is not implemented.`);
+    default:
+      return [];
+  }
 };
 
 const categorize = (_label: string): string | null => {

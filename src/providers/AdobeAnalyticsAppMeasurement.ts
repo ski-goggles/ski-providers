@@ -1,15 +1,15 @@
-import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from "../types/Types";
-import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo, isEmpty } from "ramda";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { contains, defaultTo, find, isEmpty, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, parseRawString, setTitle, stringFromBytesBuffer } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const LINK_TYPE = "Link type";
 const EVENTS = "Events";
 
-const transformer = (data: WebRequestData): WebRequestData => {
-  const params: WebRequestParam[] = sortBy(prop("label"), map(transform, data.params));
-  const dataWithTitle = setTitle(getEventName(params), data);
-  return assoc("params", params, dataWithTitle);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
+  const formatted: FormattedDataItem[] = parse(rwrd);
+  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  return setTitle(getEventName(data), data);
 };
 
 export const AdobeAnalyticsAppMeasurement: Provider = {
@@ -20,7 +20,7 @@ export const AdobeAnalyticsAppMeasurement: Provider = {
   transformer: transformer,
 };
 
-const getEventName = (params: WebRequestParam[]): string | null => {
+const getEventName = (params: FormattedDataItem[]): string | null => {
   const isCustomEvent = contains(LINK_TYPE, map(p => prop("label", p), params));
   const eventRow = defaultTo({}, find(e => e.label == EVENTS, params));
 
@@ -32,10 +32,22 @@ const getEventName = (params: WebRequestParam[]): string | null => {
   }
 };
 
-const transform = (datum: WebRequestParam): WebRequestParam => {
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromObject(rwrd.requestParams);
+    case "POST":
+      const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
+      return createFormattedDataFromObject(parseRawString(raw));
+    default:
+      return [];
+  }
+};
+
+const transform = (datum: FormattedDataItem): FormattedDataItem => {
   let category = categorize(datum.label);
   let label: string = labelReplacer(datum.label);
-  return { label: label, value: datum.value, valueType: "string", category };
+  return { label, value: datum.value, formatting: "string", category };
 };
 
 const DATA_LABEL = "Evars, Props, and Lists";

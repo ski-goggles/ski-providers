@@ -1,12 +1,12 @@
-import { Provider, WebRequestParam, WebRequestData, LabelDictionary } from '../types/Types';
-import { find, map, assoc, prop, propOr, defaultTo, sortBy } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../PrivateHelpers';
+import { defaultTo, find, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
-const transformer = (data: WebRequestData): WebRequestData => {
-  const params: WebRequestParam[] = sortBy(prop("label"), map(transform, data.params));
-  const dataWithTitle = setTitle(getEventName(params), data);
-  return assoc("params", params, dataWithTitle);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
+  const formatted: FormattedDataItem[] = parse(rwrd);
+  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  return setTitle(getEventName(data), data);
 };
 
 export const Krux: Provider = {
@@ -17,19 +17,30 @@ export const Krux: Provider = {
   transformer,
 };
 
-const getEventName = (params: WebRequestParam[]): string | null => {
+const getEventName = (params: FormattedDataItem[]): string | null => {
   const row = find(e => e.label == "fired", params);
   const eventName: string | null = propOr(null, "value", row);
   return defaultTo("Page View", eventName);
 };
 
-const transform = (datum: WebRequestParam): WebRequestParam => {
-    let category = categorize(datum.label);
-    let label : string = labelReplacer(datum.label);
-    return { label: label, value: datum.value, valueType: 'string', category };
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromObject(rwrd.requestParams);
+    case "POST":
+      console.log(`POST support for ${Krux.canonicalName} is not implemented.`);
+    default:
+      return [];
+  }
 };
 
-const DATA_LABEL = 'Data Layer';
+const transform = (datum: FormattedDataItem): FormattedDataItem => {
+  let category = categorize(datum.label);
+  let label: string = labelReplacer(datum.label);
+  return { label: label, value: datum.value, formatting: "string", category };
+};
+
+const DATA_LABEL = "Data Layer";
 
 const categorize = (label: string): string | null => {
   return when(label)
@@ -38,9 +49,9 @@ const categorize = (label: string): string | null => {
 };
 
 const labelReplacer = (label: string): string => {
-    return labelReplacerFromDictionary(label, LabelDictionary);
+  return labelReplacerFromDictionary(label, LabelDictionary);
 };
 
-const LabelDictionary : LabelDictionary = {
-    source: 'Source'
+const LabelDictionary: LabelDictionary = {
+  source: "Source",
 };
