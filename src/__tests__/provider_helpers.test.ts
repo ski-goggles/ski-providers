@@ -43,7 +43,7 @@ describe('Providers', () => {
         describe('with a selected list of Providers', () => {
             it('returns a master Regex pattern', () => {
                 const pattern = generateMasterPattern(['Snowplow', 'Krux']);
-                expect(pattern).to.eql(/(\/i\?.*tv=js-\d)|beacon\.krxd\.net\/(pixel|event)\.gif/);
+                expect(pattern).to.eql(/(\/i\?.*tv=js-\d)|(\/com.snowplowanalytics.snowplow\/tp2$)|beacon\.krxd\.net\/(pixel|event)\.gif/);
             });
         });
     });
