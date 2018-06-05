@@ -1,6 +1,6 @@
 import { contains, defaultTo, find, isEmpty, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, parseRawString, setTitle } from "../PrivateHelpers";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, parseRawString, setTitle, stringFromBytesBuffer } from "../PrivateHelpers";
 import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const LINK_TYPE = "Link type";
@@ -42,10 +42,6 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
     default:
       return [];
   }
-};
-
-const stringFromBytesBuffer = (bytes: number[]): string => {
-  return String.fromCharCode.apply(null, new Uint8Array(bytes));
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {

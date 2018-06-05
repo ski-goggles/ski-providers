@@ -24,6 +24,10 @@ export const parseRawString = (str: string): BasicKeyValueObject => {
 	return querystring.parse(str) as BasicKeyValueObject;
 };
 
+export const stringFromBytesBuffer = (bytes: number[]): string => {
+  return String.fromCharCode.apply(null, new Uint8Array(bytes));
+};
+
 const createWebRequestParam = (tuple: [string, string]): FormattedDataItem => {
 	return { label: tuple[0], value: tuple[1], formatting: "string" };
 };

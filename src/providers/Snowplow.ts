@@ -1,6 +1,6 @@
 import { contains, find, isNil, map, pathOr, prop, propEq, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer, parseRawString } from "../PrivateHelpers";
 import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const EVENT_PAYLOAD = "Event Payload";
@@ -16,7 +16,7 @@ export const Snowplow: Provider = {
   canonicalName: "Snowplow",
   displayName: "Snowplow",
   logo: "snowplow.png",
-  pattern: /(\/i\?.*tv=js-\d)/,
+  pattern: /(\/i\?.*tv=js-\d)|(\/com.snowplowanalytics.snowplow\/tp2$)/,
   transformer: transformer,
 };
 
@@ -38,6 +38,25 @@ const getEventName = (params: Array<FormattedDataItem>): string => {
     .else(unknownEvent);
 };
 
+const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+  switch (rwrd.requestType) {
+    case "GET":
+      return createFormattedDataFromObject(rwrd.requestParams);
+    case "POST":
+      const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
+      try {
+        const json = JSON.parse(raw)
+        const data = pathOr({}, ['data', 0], json);
+        return createFormattedDataFromObject(data);
+      } catch (error) {
+        console.log(`Encountered an error while parsing JSON: ${raw}`)
+        return []
+      }
+    default:
+      return [];
+  }
+};
+
 const getEventRow = (params: FormattedDataItem[]): FormattedDataItem | undefined => {
   return find(e => propEq("label", EVENT, e), params);
 };
@@ -50,18 +69,6 @@ const getTitleFromUePx = (params: Array<FormattedDataItem>): string => {
   } catch (e) {
     console.debug("Unparseable ue_px row from: ", JSON.stringify(params, null, 4));
     return "Unparseable Event";
-  }
-};
-
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
-  switch (rwrd.requestType) {
-    case "GET":
-      return createFormattedDataFromObject(rwrd.requestParams);
-    case "POST":
-      console.log(`POST support for ${Snowplow.canonicalName} is not implemented.`);
-      return [];
-    default:
-      return [];
   }
 };
 
