@@ -1,8 +1,7 @@
-import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from "../types/Types";
-import { map, contains, pathOr, find, assoc, sortBy, prop, propEq, isNil, propOr } from "ramda";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { contains, find, isNil, map, pathOr, prop, propEq, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromGet } from "../Parser";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const EVENT_PAYLOAD = "Event Payload";
 const EVENT = "Event";
@@ -57,7 +56,7 @@ const getTitleFromUePx = (params: Array<FormattedDataItem>): string => {
 const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromGet(rwrd.requestParams);
+      return createFormattedDataFromObject(rwrd.requestParams);
     case "POST":
       console.log(`POST support for ${Snowplow.canonicalName} is not implemented.`);
       return [];

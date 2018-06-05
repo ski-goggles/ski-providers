@@ -1,7 +1,6 @@
 import { map, prop, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromGet } from "../Parser";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
 import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
@@ -21,7 +20,7 @@ export const Rubicon: Provider = {
 const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromGet(rwrd.requestParams);
+      return createFormattedDataFromObject(rwrd.requestParams);
     case "POST":
       console.log(`POST support for ${Rubicon.canonicalName} is not implemented.`);
       return [];

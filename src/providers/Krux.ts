@@ -1,8 +1,7 @@
-import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from '../types/Types';
-import { find, map, assoc, prop, propOr, defaultTo, sortBy } from 'ramda';
-import { labelReplacerFromDictionary, setTitle } from '../PrivateHelpers';
+import { defaultTo, find, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromGet } from '../Parser';
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
   const formatted: FormattedDataItem[] = parse(rwrd);
@@ -27,21 +26,21 @@ const getEventName = (params: FormattedDataItem[]): string | null => {
 const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromGet(rwrd.requestParams)
+      return createFormattedDataFromObject(rwrd.requestParams);
     case "POST":
-      console.log(`POST support for ${Krux.canonicalName} is not implemented.`)
+      console.log(`POST support for ${Krux.canonicalName} is not implemented.`);
     default:
       return [];
   }
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-    let category = categorize(datum.label);
-    let label : string = labelReplacer(datum.label);
-    return { label: label, value: datum.value, formatting: 'string', category };
+  let category = categorize(datum.label);
+  let label: string = labelReplacer(datum.label);
+  return { label: label, value: datum.value, formatting: "string", category };
 };
 
-const DATA_LABEL = 'Data Layer';
+const DATA_LABEL = "Data Layer";
 
 const categorize = (label: string): string | null => {
   return when(label)
@@ -50,9 +49,9 @@ const categorize = (label: string): string | null => {
 };
 
 const labelReplacer = (label: string): string => {
-    return labelReplacerFromDictionary(label, LabelDictionary);
+  return labelReplacerFromDictionary(label, LabelDictionary);
 };
 
-const LabelDictionary : LabelDictionary = {
-    source: 'Source'
+const LabelDictionary: LabelDictionary = {
+  source: "Source",
 };

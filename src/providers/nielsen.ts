@@ -1,7 +1,6 @@
-import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from "../types/Types";
-import { map, assoc, prop, sortBy } from "ramda";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
-import { createFormattedDataFromGet } from "../Parser";
+import { map, prop, sortBy } from "ramda";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
   const formatted: FormattedDataItem[] = parse(rwrd);
@@ -26,9 +25,9 @@ const transform = (datum: FormattedDataItem): FormattedDataItem => {
 const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromGet(rwrd.requestParams)
+      return createFormattedDataFromObject(rwrd.requestParams);
     case "POST":
-      console.log(`POST support for ${Nielsen.canonicalName} is not implemented.`)
+      console.log(`POST support for ${Nielsen.canonicalName} is not implemented.`);
     default:
       return [];
   }

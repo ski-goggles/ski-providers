@@ -1,8 +1,7 @@
-import { Provider, FormattedDataItem, FormattedWebRequestData, LabelDictionary, RawWebRequestData } from "../types/Types";
-import { find, map, assoc, prop, propOr, sortBy, contains, pluck, defaultTo, isEmpty } from "ramda";
-import { labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { contains, defaultTo, find, isEmpty, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromGet } from "../Parser";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, parseRawString, setTitle } from "../PrivateHelpers";
+import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const LINK_TYPE = "Link type";
 const EVENTS = "Events";
@@ -33,16 +32,20 @@ const getEventName = (params: FormattedDataItem[]): string | null => {
   }
 };
 
-
 const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromGet(rwrd.requestParams)
+      return createFormattedDataFromObject(rwrd.requestParams);
     case "POST":
-      // return map(createWebRequestParam, toPairs(rwrd.requestBody));
+      const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
+      return createFormattedDataFromObject(parseRawString(raw));
     default:
       return [];
   }
+};
+
+const stringFromBytesBuffer = (bytes: number[]): string => {
+  return String.fromCharCode.apply(null, new Uint8Array(bytes));
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
