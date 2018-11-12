@@ -1,6 +1,6 @@
 import { contains, find, isNil, map, pathOr, prop, propEq, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer, parseRawString } from "../PrivateHelpers";
+import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer, formattedJSON } from "../PrivateHelpers";
 import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const EVENT_PAYLOAD = "Event Payload";
@@ -82,25 +82,6 @@ const transform = (datum: FormattedDataItem): FormattedDataItem => {
   } else {
     return { label, value: datum.value, formatting: datum.formatting, category };
   }
-};
-
-const formattedJSON = (data: string): string => {
-  const payload = BinarytoAscii(data);
-  let parsed;
-  try {
-    parsed = JSON.parse(payload);
-  } catch (e) {
-    parsed = {
-      error: "Could not parse data",
-      context: data,
-    };
-  }
-  const json = JSON.stringify(parsed, null, 4);
-  return json;
-};
-
-const BinarytoAscii = (data: string): string => {
-  return Buffer.from(data, "base64").toString("ascii");
 };
 
 const DATA_LABEL = "Data";

@@ -53,6 +53,7 @@ export type ProviderCanonicalName =
   | "Snowplow"
   | "AdobeAnalyticsAppMeasurement"
   | "Nielsen"
+  | "Mixpanel"
   | "Krux"
   | "Rubicon"
   | "GoogleAnalytics";
