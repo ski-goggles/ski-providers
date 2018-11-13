@@ -28,6 +28,25 @@ export const stringFromBytesBuffer = (bytes: number[]): string => {
   return String.fromCharCode.apply(null, new Uint8Array(bytes));
 };
 
+export const binarytoAscii = (data: string): string => {
+  return Buffer.from(data, "base64").toString("ascii");
+};
+
+export const formattedJSON = (data: string): string => {
+  const payload = binarytoAscii(data);
+  let parsed;
+  try {
+    parsed = JSON.parse(payload);
+  } catch (e) {
+    parsed = {
+      error: "Could not parse data",
+      context: data,
+    };
+  }
+  const json = JSON.stringify(parsed, null, 4);
+  return json;
+};
+
 const createWebRequestParam = (tuple: [string, string]): FormattedDataItem => {
 	return { label: tuple[0], value: tuple[1], formatting: "string" };
 };
