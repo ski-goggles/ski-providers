@@ -56,7 +56,8 @@ export type ProviderCanonicalName =
   | "Mixpanel"
   | "Krux"
   | "Rubicon"
-  | "GoogleAnalytics";
+  | "GoogleAnalytics"
+  | "Facebook";
 
 export type Version = string;
 

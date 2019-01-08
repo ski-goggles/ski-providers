@@ -5,3 +5,4 @@ export { Rubicon } from './Rubicon';
 export { Nielsen } from './Nielsen';
 export { Mixpanel } from './Mixpanel';
 export { GoogleAnalytics } from './GoogleAnalytics';
+export { Facebook } from './Facebook';
