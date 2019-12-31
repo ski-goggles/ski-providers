@@ -1,4 +1,4 @@
-import { contains, filter, find, isNil, join, map, path, values } from "ramda";
+import { contains, defaultTo, filter, find, isNil, join, map, path, values } from "ramda";
 import * as Providers from "./providers";
 import { Provider, ProviderCanonicalName } from "./types/Types";
 
@@ -9,7 +9,8 @@ export const lookup = (name: ProviderCanonicalName): Provider | null => {
 };
 
 export const lookupByUrl = (url: string): Provider | null => {
-  const provider = find(p => !!url.match(path(["pattern"], p)), values(Providers));
+  const getRegex = (p: Provider) => defaultTo(new RegExp(""), path(["pattern"], p)) as RegExp;
+  const provider = find(p => !!url.match(getRegex(p)), values(Providers));
 
   return isNil(provider) ? null : provider;
 };
