@@ -30,9 +30,9 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-  let category = categorize(datum.label);
-  let label: string = labelReplacer(datum.label);
-  return { label: label, value: datum.value, formatting: "string", category };
+  const category = categorize(datum.label);
+  const label: string = labelReplacer(datum.label);
+  return { label, value: datum.value, formatting: "string", category };
 };
 
 const DATA_LABEL = "Data Layer";

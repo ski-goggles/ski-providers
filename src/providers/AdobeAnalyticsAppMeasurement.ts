@@ -17,7 +17,7 @@ export const AdobeAnalyticsAppMeasurement: Provider = {
   displayName: "Adobe Analytics AppMeasurement",
   logo: "adobe-analytics-app-measurement.png",
   pattern: /\/b\/ss\/|2o7/,
-  transformer: transformer,
+  transformer,
 };
 
 const getEventName = (params: FormattedDataItem[]): string | null => {
@@ -45,8 +45,8 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-  let category = categorize(datum.label);
-  let label: string = labelReplacer(datum.label);
+  const category = categorize(datum.label);
+  const label: string = labelReplacer(datum.label);
   return { label, value: datum.value, formatting: "string", category };
 };
 

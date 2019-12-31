@@ -41,9 +41,9 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-  let category = categorize(datum.label);
-  let label: string = labelReplacer(datum.label);
-  return { label: label, value: datum.value, formatting: "string", category };
+  const category = categorize(datum.label);
+  const label: string = labelReplacer(datum.label);
+  return { label, value: datum.value, formatting: "string", category };
 };
 
 const DATA_LABEL = "Data Layer";
@@ -59,19 +59,19 @@ const labelReplacer = (label: string): string => {
 };
 
 const LabelDictionary: LabelDictionary = {
-  id: "Account",
-  requestType: "Request Type",
-  ev: "Event Type",
-  dl: "Page URL",
-  rl: "Referring URL",
-  ts: "Timestamp",
-  sw: "Screen Width",
-  sh: "Screen Height",
-  v: "Pixel Version",
-  ec: "Event Count",
-  if: "In an iFrame",
-  it: "Initialized Timestamp",
-  r: "Code Branch",
+  "id": "Account",
+  "requestType": "Request Type",
+  "ev": "Event Type",
+  "dl": "Page URL",
+  "rl": "Referring URL",
+  "ts": "Timestamp",
+  "sw": "Screen Width",
+  "sh": "Screen Height",
+  "v": "Pixel Version",
+  "ec": "Event Count",
+  "if": "In an iFrame",
+  "it": "Initialized Timestamp",
+  "r": "Code Branch",
   "cd[content_name]": "Content Name",
   "cd[content_category]": "Content Category",
   "cd[content_ids]": "Product IDs",

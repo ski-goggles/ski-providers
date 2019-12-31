@@ -1,6 +1,6 @@
-import { ProviderCanonicalName, Provider } from "./types/Types";
+import { contains, filter, find, isNil, join, map, path, values } from "ramda";
 import * as Providers from "./providers";
-import { values, find, path, isNil, filter, contains, join, map } from "ramda";
+import { Provider, ProviderCanonicalName } from "./types/Types";
 
 export const lookup = (name: ProviderCanonicalName): Provider | null => {
   const provider = find(p => p.canonicalName === name, values(Providers));
@@ -21,7 +21,7 @@ export const matchesBroadly = (url: string, regexPattern: RegExp): boolean => {
 export const generateMasterPattern = (selectedProviders: ProviderCanonicalName[]): RegExp => {
   const filtered = filter((p: Provider) => contains(p.canonicalName, selectedProviders), values(Providers));
 
-  let pattern = join("|", map(path(["pattern", "source"]), filtered));
+  const pattern = join("|", map(path(["pattern", "source"]), filtered));
 
   return new RegExp(pattern);
 };

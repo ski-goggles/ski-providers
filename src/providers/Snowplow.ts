@@ -1,6 +1,6 @@
 import { contains, find, isNil, map, pathOr, prop, propEq, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer, formattedJSON } from "../PrivateHelpers";
+import { createFormattedDataFromObject, formattedJSON, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer } from "../PrivateHelpers";
 import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const EVENT_PAYLOAD = "Event Payload";
@@ -17,14 +17,14 @@ export const Snowplow: Provider = {
   displayName: "Snowplow",
   logo: "snowplow.png",
   pattern: /(\/i\?.*tv=js-\d)|(\/com.snowplowanalytics.snowplow\/tp2$)/,
-  transformer: transformer,
+  transformer,
 };
 
-const getEventName = (params: Array<FormattedDataItem>): string => {
+const getEventName = (params: FormattedDataItem[]): string => {
   const unknownEvent = "Unknown Event";
 
   const row = getEventRow(params);
-  if (isNil(row)) return unknownEvent;
+  if (isNil(row)) { return unknownEvent; }
 
   const eventType = prop("value", row);
 
@@ -45,12 +45,12 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
     case "POST":
       const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
       try {
-        const json = JSON.parse(raw)
-        const data = pathOr({}, ['data', 0], json);
+        const json = JSON.parse(raw);
+        const data = pathOr({}, ["data", 0], json);
         return createFormattedDataFromObject(data);
       } catch (error) {
-        console.log(`Encountered an error while parsing JSON: ${raw}`)
-        return []
+        console.log(`Encountered an error while parsing JSON: ${raw}`);
+        return [];
       }
     default:
       return [];
@@ -61,7 +61,7 @@ const getEventRow = (params: FormattedDataItem[]): FormattedDataItem | undefined
   return find(e => propEq("label", EVENT, e), params);
 };
 
-const getTitleFromUePx = (params: Array<FormattedDataItem>): string => {
+const getTitleFromUePx = (params: FormattedDataItem[]): string => {
   try {
     const ue_px_row = find(e => propEq("label", EVENT_PAYLOAD, e), params);
     const json = JSON.parse(propOr({}, "value", ue_px_row));

@@ -18,7 +18,7 @@ export const setTitle = (t: string | null, data: FormattedDataItem[]): Formatted
 
 export const createFormattedDataFromObject = (obj: BasicKeyValueObject): FormattedDataItem[] => {
 	return map(createWebRequestParam, toPairs(obj));
-}
+};
 
 export const parseRawString = (str: string): BasicKeyValueObject => {
 	return querystring.parse(str) as BasicKeyValueObject;

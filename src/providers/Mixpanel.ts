@@ -1,6 +1,6 @@
-import { map, prop, sortBy, find, defaultTo, propOr, merge, dissoc, intersection, pluck, keys, values, head, isNil, not, contains, append, concat } from "ramda";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle, binarytoAscii, formattedJSON } from "../PrivateHelpers";
-import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData, BasicKeyValueObject } from "../types/Types";
+import { append, concat, contains, defaultTo, dissoc, find, head, intersection, isNil, keys, map, merge, not, pluck, prop, propOr, sortBy, values } from "ramda";
+import { binarytoAscii, createFormattedDataFromObject, formattedJSON, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
+import { BasicKeyValueObject, FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
 
 const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
   const formatted: FormattedDataItem[] = parse(rwrd);
@@ -17,13 +17,13 @@ export const Mixpanel: Provider = {
 };
 
 const getEventName = (data: FormattedDataItem[]): string => {
-  const eventRow = defaultTo({}, find(e => e.label == 'Event', data));
+  const eventRow = defaultTo({}, find(e => e.label == "Event", data));
   const trackEventName: string = propOr(null, "value", eventRow);
-  if(not(isNil(trackEventName))){
+  if (not(isNil(trackEventName))) {
     return trackEventName;
   } else {
-    const possibleOperation = head(intersection(values(operations), pluck('label', data)))
-    if(not(isNil(possibleOperation))) {
+    const possibleOperation = head(intersection(values(operations), pluck("label", data)));
+    if (not(isNil(possibleOperation))) {
       return possibleOperation as string;
     } else {
       return "Unknown Event";
@@ -32,9 +32,9 @@ const getEventName = (data: FormattedDataItem[]): string => {
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-  let category = categorize(datum.label);
-  let label: string = labelReplacer(datum.label);
-  const jsonLabels = append('properties', keys(operations));
+  const category = categorize(datum.label);
+  const label: string = labelReplacer(datum.label);
+  const jsonLabels = append("properties", keys(operations));
 
   if (contains(datum.label, jsonLabels)) {
     const json = JSON.stringify(datum.value, null, 4);
@@ -56,8 +56,8 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
 };
 
 const buildNestedFormattedData = (raw: BasicKeyValueObject): FormattedDataItem[] => {
-  const data = createFormattedDataFromObject(JSON.parse(binarytoAscii(raw["data"])));
-  return concat(data, createFormattedDataFromObject(dissoc('data', raw)))
+  const data = createFormattedDataFromObject(JSON.parse(binarytoAscii(raw.data)));
+  return concat(data, createFormattedDataFromObject(dissoc("data", raw)));
 };
 
 const categorize = (_label: string): string | null => {
@@ -69,33 +69,33 @@ const labelReplacer = (label: string): string => {
 };
 
 const operations: BasicKeyValueObject = {
-  "$set": "Set Operation",
-  "$add": "Add Operation",
-  "$append": "Append Operation",
-  "$union": "Union Operation",
-  "$remove": "Union Operation",
-  "$unset": "Union Operation",
-  "$delete": "Delete Operation",
+  $set: "Set Operation",
+  $add: "Add Operation",
+  $append: "Append Operation",
+  $union: "Union Operation",
+  $remove: "Union Operation",
+  $unset: "Union Operation",
+  $delete: "Delete Operation",
 };
 
 const generalLabels: LabelDictionary = {
-  "ip": "IP Address",
-  "redirect": "Redirect URL",
-  "img": "Serve Image?",
-  "callback": "Callback function",
-  "verbose": "Verbose?",
-  "event": "Event",
-  "$token": "Token",
-  "$distinct_id": "Distinct Id",
-  "$ip": "IP Address",
-  "$time": "Time",
-  "$ignore_time": "Ignore Time?",
-  "$ignore_alias": "Ignore Alias",
-  "$first_name": "First Name",
-  "$last_name": "Last Name",
-  "$created": "Created",
-  "$email": "Email",
-  "$phone": "Phone",
+  ip: "IP Address",
+  redirect: "Redirect URL",
+  img: "Serve Image?",
+  callback: "Callback function",
+  verbose: "Verbose?",
+  event: "Event",
+  $token: "Token",
+  $distinct_id: "Distinct Id",
+  $ip: "IP Address",
+  $time: "Time",
+  $ignore_time: "Ignore Time?",
+  $ignore_alias: "Ignore Alias",
+  $first_name: "First Name",
+  $last_name: "Last Name",
+  $created: "Created",
+  $email: "Email",
+  $phone: "Phone",
 };
 
 const LabelDictionary: LabelDictionary = merge(operations, generalLabels);

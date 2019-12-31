@@ -48,9 +48,9 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
 };
 
 const transform = (datum: FormattedDataItem): FormattedDataItem => {
-  let category = "Data";
-  let label: string = labelReplacer(datum.label);
-  return { label: label, value: datum.value, formatting: "string", category };
+  const category = "Data";
+  const label: string = labelReplacer(datum.label);
+  return { label, value: datum.value, formatting: "string", category };
 };
 
 const labelReplacer = (label: string): string => {
