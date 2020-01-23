@@ -1,10 +1,45 @@
-import { append, concat, contains, defaultTo, dissoc, find, head, intersection, isNil, keys, map, merge, not, pluck, prop, propOr, sortBy, values } from "ramda";
-import { binarytoAscii, createFormattedDataFromObject, formattedJSON, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
-import { BasicKeyValueObject, FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
+import {
+  append,
+  concat,
+  contains,
+  defaultTo,
+  dissoc,
+  find,
+  head,
+  intersection,
+  isNil,
+  keys,
+  map,
+  merge,
+  not,
+  pluck,
+  prop,
+  propOr,
+  sortBy,
+  values,
+} from "ramda";
+import {
+  binarytoAscii,
+  createFormattedDataFromObject,
+  formattedJSON,
+  labelReplacerFromDictionary,
+  setTitle,
+} from "../PrivateHelpers";
+import {
+  BasicKeyValueObject,
+  FormattedDataItem,
+  FormattedWebRequestData,
+  LabelDictionary,
+  Provider,
+  RawWebRequestData,
+} from "../types/Types";
 
 const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
   const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
+  const data: FormattedDataItem[] = sortBy(
+    prop("label"),
+    map(transform, formatted),
+  );
   return setTitle(getEventName(data), data);
 };
 
@@ -12,17 +47,22 @@ export const Mixpanel: Provider = {
   canonicalName: "Mixpanel",
   displayName: "Mixpanel",
   logo: "mixpanel.png",
-  pattern: /api.mixpanel.com\/(track|engage)\//,
+  pattern: /api(\-js)?.mixpanel.com\/(track|engage)\//,
   transformer,
 };
 
 const getEventName = (data: FormattedDataItem[]): string => {
-  const eventRow = defaultTo({}, find(e => e.label == "Event", data));
+  const eventRow = defaultTo(
+    {},
+    find(e => e.label == "Event", data),
+  );
   const trackEventName: string = propOr(null, "value", eventRow);
   if (not(isNil(trackEventName))) {
     return trackEventName;
   } else {
-    const possibleOperation = head(intersection(values(operations), pluck("label", data)));
+    const possibleOperation = head(
+      intersection(values(operations), pluck("label", data)),
+    );
     if (not(isNil(possibleOperation))) {
       return possibleOperation as string;
     } else {
@@ -40,7 +80,12 @@ const transform = (datum: FormattedDataItem): FormattedDataItem => {
     const json = JSON.stringify(datum.value, null, 4);
     return { label, value: json, formatting: "json", category };
   } else {
-    return { label, value: datum.value, formatting: datum.formatting, category };
+    return {
+      label,
+      value: datum.value,
+      formatting: datum.formatting,
+      category,
+    };
   }
 };
 
@@ -49,14 +94,20 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
     case "GET":
       return buildNestedFormattedData(rwrd.requestParams);
     case "POST":
-      console.log(`POST support for ${Mixpanel.canonicalName} is not implemented.`);
+      console.log(
+        `POST support for ${Mixpanel.canonicalName} is not implemented.`,
+      );
     default:
       return [];
   }
 };
 
-const buildNestedFormattedData = (raw: BasicKeyValueObject): FormattedDataItem[] => {
-  const data = createFormattedDataFromObject(JSON.parse(binarytoAscii(raw.data)));
+const buildNestedFormattedData = (
+  raw: BasicKeyValueObject,
+): FormattedDataItem[] => {
+  const data = createFormattedDataFromObject(
+    JSON.parse(binarytoAscii(raw.data)),
+  );
   return concat(data, createFormattedDataFromObject(dissoc("data", raw)));
 };
 
