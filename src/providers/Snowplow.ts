@@ -18,6 +18,7 @@ import {
   stringFromBytesBuffer,
 } from "../PrivateHelpers";
 import {
+  BasicKeyValueObject,
   FormattedDataGroup,
   FormattedDataItem,
   FormattedWebRequestData,
@@ -75,8 +76,10 @@ const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
       const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
       try {
         const json = JSON.parse(raw);
-        const data = pathOr({}, ["data", 0], json);
-        return [createFormattedDataFromObject(data)];
+        return map(
+          d => createFormattedDataFromObject(d as BasicKeyValueObject),
+          pathOr({}, ["data"], json),
+        );
       } catch (error) {
         console.log(`Encountered an error while parsing JSON: ${raw}`);
         return [];
@@ -98,10 +101,6 @@ const getTitleFromUePx = (params: FormattedDataItem[]): string => {
     const json = JSON.parse(propOr({}, "value", ue_px_row));
     return pathOr("Unknown Event", ["data", "data", "event_name"], json);
   } catch (e) {
-    console.debug(
-      "Unparseable ue_px row from: ",
-      JSON.stringify(params, null, 4),
-    );
     return "Unparseable Event";
   }
 };
