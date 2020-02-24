@@ -27,6 +27,7 @@ import {
 } from "../PrivateHelpers";
 import {
   BasicKeyValueObject,
+  FormattedDataGroup,
   FormattedDataItem,
   FormattedWebRequestData,
   LabelDictionary,
@@ -34,13 +35,14 @@ import {
   RawWebRequestData,
 } from "../types/Types";
 
-const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
-  const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(
-    prop("label"),
-    map(transform, formatted),
-  );
-  return setTitle(getEventName(data), data);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData[] => {
+  return map((fdg: FormattedDataGroup) => {
+    const sorted: FormattedDataGroup = sortBy(
+      prop("label"),
+      map(transform, fdg),
+    );
+    return setTitle(getEventName(sorted), sorted);
+  }, parse(rwrd));
 };
 
 export const Mixpanel: Provider = {
@@ -89,10 +91,10 @@ const transform = (datum: FormattedDataItem): FormattedDataItem => {
   }
 };
 
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return buildNestedFormattedData(rwrd.requestParams);
+      return [buildNestedFormattedData(rwrd.requestParams)];
     case "POST":
       console.log(
         `POST support for ${Mixpanel.canonicalName} is not implemented.`,

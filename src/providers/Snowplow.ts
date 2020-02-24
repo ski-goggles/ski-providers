@@ -1,15 +1,43 @@
-import { contains, find, isNil, map, pathOr, prop, propEq, propOr, sortBy } from "ramda";
+import {
+  contains,
+  find,
+  isNil,
+  map,
+  pathOr,
+  prop,
+  propEq,
+  propOr,
+  sortBy,
+} from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, formattedJSON, labelReplacerFromDictionary, setTitle, stringFromBytesBuffer } from "../PrivateHelpers";
-import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
+import {
+  createFormattedDataFromObject,
+  formattedJSON,
+  labelReplacerFromDictionary,
+  setTitle,
+  stringFromBytesBuffer,
+} from "../PrivateHelpers";
+import {
+  BasicKeyValueObject,
+  FormattedDataGroup,
+  FormattedDataItem,
+  FormattedWebRequestData,
+  LabelDictionary,
+  Provider,
+  RawWebRequestData,
+} from "../types/Types";
 
 const EVENT_PAYLOAD = "Event Payload";
 const EVENT = "Event";
 
-const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
-  const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
-  return setTitle(getEventName(data), data);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData[] => {
+  return map((fdg: FormattedDataGroup) => {
+    const sorted: FormattedDataGroup = sortBy(
+      prop("label"),
+      map(transform, fdg),
+    );
+    return setTitle(getEventName(sorted), sorted);
+  }, parse(rwrd));
 };
 
 export const Snowplow: Provider = {
@@ -24,7 +52,9 @@ const getEventName = (params: FormattedDataItem[]): string => {
   const unknownEvent = "Unknown Event";
 
   const row = getEventRow(params);
-  if (isNil(row)) { return unknownEvent; }
+  if (isNil(row)) {
+    return unknownEvent;
+  }
 
   const eventType = prop("value", row);
 
@@ -38,16 +68,18 @@ const getEventName = (params: FormattedDataItem[]): string => {
     .else(unknownEvent);
 };
 
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromObject(rwrd.requestParams);
+      return [createFormattedDataFromObject(rwrd.requestParams)];
     case "POST":
       const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
       try {
         const json = JSON.parse(raw);
-        const data = pathOr({}, ["data", 0], json);
-        return createFormattedDataFromObject(data);
+        return map(
+          d => createFormattedDataFromObject(d as BasicKeyValueObject),
+          pathOr({}, ["data"], json),
+        );
       } catch (error) {
         console.log(`Encountered an error while parsing JSON: ${raw}`);
         return [];
@@ -57,7 +89,9 @@ const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
   }
 };
 
-const getEventRow = (params: FormattedDataItem[]): FormattedDataItem | undefined => {
+const getEventRow = (
+  params: FormattedDataItem[],
+): FormattedDataItem | undefined => {
   return find(e => propEq("label", EVENT, e), params);
 };
 
@@ -67,7 +101,6 @@ const getTitleFromUePx = (params: FormattedDataItem[]): string => {
     const json = JSON.parse(propOr({}, "value", ue_px_row));
     return pathOr("Unknown Event", ["data", "data", "event_name"], json);
   } catch (e) {
-    console.debug("Unparseable ue_px row from: ", JSON.stringify(params, null, 4));
     return "Unparseable Event";
   }
 };
@@ -80,7 +113,12 @@ const transform = (datum: FormattedDataItem): FormattedDataItem => {
     const json = formattedJSON(datum.value);
     return { label, value: json, formatting: "json", category };
   } else {
-    return { label, value: datum.value, formatting: datum.formatting, category };
+    return {
+      label,
+      value: datum.value,
+      formatting: datum.formatting,
+      category,
+    };
   }
 };
 

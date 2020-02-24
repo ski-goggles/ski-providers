@@ -10,11 +10,13 @@ describe("Rubicon", () => {
       const rwrd: GetRequest = {
         url: "http://someurl.tld",
         requestType: "GET",
-        requestParams: { fired: "test" },
+        requestParams: { fired: "test" }
       };
       const transformed = Rubicon.transformer(rwrd);
       it("returns the correct event title", () => {
-        expect(path(["meta", "title"], transformed)).to.eql("Ad Load Request");
+        expect(path(["meta", "title"], transformed[0])).to.eql(
+          "Ad Load Request"
+        );
       });
     });
 
@@ -23,12 +25,14 @@ describe("Rubicon", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { tg_i: "test", u: "test2" },
+          requestParams: { tg_i: "test", u: "test2" }
         };
         const transformed = Rubicon.transformer(rwrd);
         it("sets the correct category", () => {
-          expect(path(["data", 0, "category"], transformed)).to.eql("Data Layer");
-          expect(path(["data", 1, "category"], transformed)).to.eql(null);
+          expect(path(["data", 0, "category"], transformed[0])).to.eql(
+            "Data Layer"
+          );
+          expect(path(["data", 1, "category"], transformed[0])).to.eql(null);
         });
       });
 
@@ -36,11 +40,11 @@ describe("Rubicon", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { source: "test", u: "test2" },
+          requestParams: { source: "test", u: "test2" }
         };
         const transformed = Rubicon.transformer(rwrd);
         it("sets the correct label", () => {
-          expect(path(["data", 0, "label"], transformed)).to.eql("Source");
+          expect(path(["data", 0, "label"], transformed[0])).to.eql("Source");
         });
       });
     });

@@ -19,7 +19,7 @@ describe("Adobe Analytics Manager", () => {
       };
       const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
       it("returns the label Unknown Event", () => {
-        expect(path(["meta", "title"], transformed)).to.eql("Page Load (event19:1528284525qjrci3uu,event10:1528284525qy6wdtcx,event4:1528284525qy6wdtcx,event12)");
+        expect(path(["meta", "title"], transformed[0])).to.eql("Page Load (event19:1528284525qjrci3uu,event10:1528284525qy6wdtcx,event4:1528284525qy6wdtcx,event12)");
       });
     });
 
@@ -34,7 +34,7 @@ describe("Adobe Analytics Manager", () => {
             };
             const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
             it("returns the label Unknown Event", () => {
-              expect(path(["meta", "title"], transformed)).to.eql("Unknown Event");
+              expect(path(["meta", "title"], transformed[0])).to.eql("Unknown Event");
             });
           });
 
@@ -46,7 +46,7 @@ describe("Adobe Analytics Manager", () => {
             };
             const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
             it("returns the correct event", () => {
-              expect(path(["meta", "title"], transformed)).to.eql("event1");
+              expect(path(["meta", "title"], transformed[0])).to.eql("event1");
             });
           });
         });
@@ -59,7 +59,7 @@ describe("Adobe Analytics Manager", () => {
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
           it("returns the Page Load label", () => {
-            expect(path(["meta", "title"], transformed)).to.eql("Page Load");
+            expect(path(["meta", "title"], transformed[0])).to.eql("Page Load");
           });
 
           describe("and contains events data", () => {
@@ -70,7 +70,7 @@ describe("Adobe Analytics Manager", () => {
             };
             const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
             it("returns Page Load label with events", () => {
-              expect(path(["meta", "title"], transformed)).to.eql("Page Load (event1)");
+              expect(path(["meta", "title"], transformed[0])).to.eql("Page Load (event1)");
             });
           });
         });
@@ -85,9 +85,9 @@ describe("Adobe Analytics Manager", () => {
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
           it("sets the label with a readble prefix - eVar", () => {
-            expect(path(["data", 0, "label"], transformed)).to.eql("eVar1");
-            expect(path(["data", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
-            expect(path(["data", 1, "label"], transformed)).to.eql("eVar2");
+            expect(path(["data", 0, "label"], transformed[0])).to.eql("eVar1");
+            expect(path(["data", 0, "category"], transformed[0])).to.eql("Evars, Props, and Lists");
+            expect(path(["data", 1, "label"], transformed[0])).to.eql("eVar2");
           });
         });
 
@@ -99,9 +99,9 @@ describe("Adobe Analytics Manager", () => {
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
           it("sets the label with a readble prefix - eVar", () => {
-            expect(path(["data", 0, "label"], transformed)).to.eql("Prop1");
-            expect(path(["data", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
-            expect(path(["data", 1, "label"], transformed)).to.eql("Prop2");
+            expect(path(["data", 0, "label"], transformed[0])).to.eql("Prop1");
+            expect(path(["data", 0, "category"], transformed[0])).to.eql("Evars, Props, and Lists");
+            expect(path(["data", 1, "label"], transformed[0])).to.eql("Prop2");
           });
         });
 
@@ -113,9 +113,9 @@ describe("Adobe Analytics Manager", () => {
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
           it("sets the label with a readble prefix - list", () => {
-            expect(path(["data", 0, "label"], transformed)).to.eql("List1");
-            expect(path(["data", 0, "category"], transformed)).to.eql("Evars, Props, and Lists");
-            expect(path(["data", 1, "label"], transformed)).to.eql("List2");
+            expect(path(["data", 0, "label"], transformed[0])).to.eql("List1");
+            expect(path(["data", 0, "category"], transformed[0])).to.eql("Evars, Props, and Lists");
+            expect(path(["data", 1, "label"], transformed[0])).to.eql("List2");
           });
         });
 
@@ -127,7 +127,7 @@ describe("Adobe Analytics Manager", () => {
           };
           const transformed = AdobeAnalyticsAppMeasurement.transformer(rwrd);
           it("sets the correct label", () => {
-            expect(path(["data", 0, "label"], transformed)).to.eql("Visitor namespace");
+            expect(path(["data", 0, "label"], transformed[0])).to.eql("Visitor namespace");
           });
         });
       });
