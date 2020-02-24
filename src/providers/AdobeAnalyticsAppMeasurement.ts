@@ -1,15 +1,41 @@
-import { contains, defaultTo, find, isEmpty, map, prop, propOr, sortBy } from "ramda";
+import {
+  contains,
+  defaultTo,
+  find,
+  isEmpty,
+  map,
+  prop,
+  propOr,
+  sortBy,
+} from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, parseRawString, setTitle, stringFromBytesBuffer } from "../PrivateHelpers";
-import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
+import {
+  createFormattedDataFromObject,
+  labelReplacerFromDictionary,
+  parseRawString,
+  setTitle,
+  stringFromBytesBuffer,
+} from "../PrivateHelpers";
+import {
+  FormattedDataGroup,
+  FormattedDataItem,
+  FormattedWebRequestData,
+  LabelDictionary,
+  Provider,
+  RawWebRequestData,
+} from "../types/Types";
 
 const LINK_TYPE = "Link type";
 const EVENTS = "Events";
 
-const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
-  const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
-  return setTitle(getEventName(data), data);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData[] => {
+  return map((fdg: FormattedDataGroup) => {
+    const sorted: FormattedDataGroup = sortBy(
+      prop("label"),
+      map(transform, fdg),
+    );
+    return setTitle(getEventName(sorted), sorted);
+  }, parse(rwrd));
 };
 
 export const AdobeAnalyticsAppMeasurement: Provider = {
@@ -21,8 +47,14 @@ export const AdobeAnalyticsAppMeasurement: Provider = {
 };
 
 const getEventName = (params: FormattedDataItem[]): string | null => {
-  const isCustomEvent = contains(LINK_TYPE, map(p => prop("label", p), params));
-  const eventRow = defaultTo({}, find(e => e.label == EVENTS, params));
+  const isCustomEvent = contains(
+    LINK_TYPE,
+    map(p => prop("label", p), params),
+  );
+  const eventRow = defaultTo(
+    {},
+    find(e => e.label == EVENTS, params),
+  );
 
   const eventName: string = propOr("Unknown Event", "value", eventRow);
   if (isCustomEvent) {
@@ -32,13 +64,13 @@ const getEventName = (params: FormattedDataItem[]): string | null => {
   }
 };
 
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromObject(rwrd.requestParams);
+      return [createFormattedDataFromObject(rwrd.requestParams)];
     case "POST":
       const raw = stringFromBytesBuffer(rwrd.requestBody.raw[0].bytes);
-      return createFormattedDataFromObject(parseRawString(raw));
+      return [createFormattedDataFromObject(parseRawString(raw))];
     default:
       return [];
   }

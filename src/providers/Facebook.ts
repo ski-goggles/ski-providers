@@ -1,7 +1,12 @@
 import { defaultTo, find, map, prop, propOr, sortBy } from "ramda";
 import when from "when-switch";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
 import {
+  createFormattedDataFromObject,
+  labelReplacerFromDictionary,
+  setTitle,
+} from "../PrivateHelpers";
+import {
+  FormattedDataGroup,
   FormattedDataItem,
   FormattedWebRequestData,
   LabelDictionary,
@@ -9,10 +14,14 @@ import {
   RawWebRequestData,
 } from "../types/Types";
 
-const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
-  const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
-  return setTitle(getEventName(data), data);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData[] => {
+  return map((fdg: FormattedDataGroup) => {
+    const sorted: FormattedDataGroup = sortBy(
+      prop("label"),
+      map(transform, fdg),
+    );
+    return setTitle(getEventName(sorted), sorted);
+  }, parse(rwrd));
 };
 
 export const Facebook: Provider = {
@@ -29,12 +38,14 @@ const getEventName = (params: FormattedDataItem[]): string | null => {
   return defaultTo("Page View", eventName);
 };
 
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromObject(rwrd.requestParams);
+      return [createFormattedDataFromObject(rwrd.requestParams)];
     case "POST":
-      console.log(`POST support for ${Facebook.canonicalName} is not implemented.`);
+      console.log(
+        `POST support for ${Facebook.canonicalName} is not implemented.`,
+      );
     default:
       return [];
   }

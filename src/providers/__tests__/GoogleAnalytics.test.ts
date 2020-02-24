@@ -11,11 +11,11 @@ describe("GoogleAnalytics", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { t: "pageview" },
+          requestParams: { t: "pageview" }
         };
         const transformed = GoogleAnalytics.transformer(rwrd);
         it("returns the correct event title", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("Page Load");
+          expect(path(["meta", "title"], transformed[0])).to.eql("Page Load");
         });
       });
 
@@ -23,11 +23,11 @@ describe("GoogleAnalytics", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { ea: "Awesome" },
+          requestParams: { ea: "Awesome" }
         };
         const transformed = GoogleAnalytics.transformer(rwrd);
         it("returns the correct event title based on the event action", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("Awesome");
+          expect(path(["meta", "title"], transformed[0])).to.eql("Awesome");
         });
       });
 
@@ -35,11 +35,13 @@ describe("GoogleAnalytics", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { something: "Awesome" },
+          requestParams: { something: "Awesome" }
         };
         const transformed = GoogleAnalytics.transformer(rwrd);
         it("returns a fallback value", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("Unknown Event");
+          expect(path(["meta", "title"], transformed[0])).to.eql(
+            "Unknown Event"
+          );
         });
       });
     });
@@ -49,11 +51,13 @@ describe("GoogleAnalytics", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { tid: "awesome-tracking-id" },
+          requestParams: { tid: "awesome-tracking-id" }
         };
         const transformed = GoogleAnalytics.transformer(rwrd);
         it("returns the replaced Label", () => {
-          expect(path(["data", 0, "label"], transformed)).to.eql("Tracking ID");
+          expect(path(["data", 0, "label"], transformed[0])).to.eql(
+            "Tracking ID"
+          );
         });
       });
     });

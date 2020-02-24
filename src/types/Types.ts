@@ -41,12 +41,14 @@ export interface FormattedDataItem {
   category?: string | null;
 }
 
+export type FormattedDataGroup = FormattedDataItem[];
+
 export interface Provider {
   canonicalName: ProviderCanonicalName;
   displayName: string;
   logo: string;
   pattern: RegExp;
-  transformer: (rwrd: RawWebRequestData) => FormattedWebRequestData;
+  transformer: (rwrd: RawWebRequestData) => FormattedWebRequestData[];
 }
 
 export type ProviderCanonicalName =

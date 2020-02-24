@@ -14,7 +14,7 @@ describe("Nielsen", () => {
       };
       const transformed = Nielsen.transformer(rwrd);
       it("returns the correct event title", () => {
-        expect(path(["meta", "title"], transformed)).to.eql("Page View");
+        expect(path(["meta", "title"], transformed[0])).to.eql("Page View");
       });
     });
 
@@ -26,7 +26,7 @@ describe("Nielsen", () => {
       };
       const transformed = Nielsen.transformer(rwrd);
       it("sets the correct label", () => {
-        expect(path(["data", 0, "label"], transformed)).to.eql("Language");
+        expect(path(["data", 0, "label"], transformed[0])).to.eql("Language");
       });
     });
   });

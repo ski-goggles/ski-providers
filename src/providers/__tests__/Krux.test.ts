@@ -15,7 +15,7 @@ describe("Krux", () => {
         };
         const transformed = Krux.transformer(rwrd);
         it("returns the correct event title", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("test");
+          expect(path(["meta", "title"], transformed[0])).to.eql("test");
         });
       });
 
@@ -27,7 +27,7 @@ describe("Krux", () => {
         };
         const transformed = Krux.transformer(rwrd);
         it("returns the correct event title", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("Page View");
+          expect(path(["meta", "title"], transformed[0])).to.eql("Page View");
         });
       });
     });
@@ -41,8 +41,8 @@ describe("Krux", () => {
         };
         const transformed = Krux.transformer(rwrd);
         it("sets the correct category", () => {
-          expect(path(["data", 0, "category"], transformed)).to.eql("Data Layer");
-          expect(path(["data", 1, "category"], transformed)).to.eql(null);
+          expect(path(["data", 0, "category"], transformed[0])).to.eql("Data Layer");
+          expect(path(["data", 1, "category"], transformed[0])).to.eql(null);
         });
       });
 
@@ -54,8 +54,8 @@ describe("Krux", () => {
         };
         const transformed = Krux.transformer(rwrd);
         it("sets the correct category", () => {
-          expect(path(["data", 0, "category"], transformed)).to.eql("Data Layer");
-          expect(path(["data", 1, "category"], transformed)).to.eql(null);
+          expect(path(["data", 0, "category"], transformed[0])).to.eql("Data Layer");
+          expect(path(["data", 1, "category"], transformed[0])).to.eql(null);
         });
       });
 
@@ -67,7 +67,7 @@ describe("Krux", () => {
         };
         const transformed = Krux.transformer(rwrd);
         it("sets the correct label", () => {
-          expect(path(["data", 0, "label"], transformed)).to.eql("Source");
+          expect(path(["data", 0, "label"], transformed[0])).to.eql("Source");
         });
       });
     });

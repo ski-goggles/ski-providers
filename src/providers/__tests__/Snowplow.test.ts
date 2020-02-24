@@ -10,12 +10,14 @@ describe("Snowplow", () => {
     const rwrd: PostRequest = {
       url: "http://someurl.tld",
       requestType: "POST",
-      requestBody: { raw: [{ bytes: SnowplowPostRequestBytes }] },
+      requestBody: { raw: [{ bytes: SnowplowPostRequestBytes }] }
     };
     const transformed = Snowplow.transformer(rwrd);
     it(`returns the event type as Page View `, () => {
-      expect(path(["meta", "title"], transformed)).to.eql("Page View");
-      expect(path(["data", 0, "label"], transformed)).to.eql("Context Payload");
+      expect(path(["meta", "title"], transformed[0])).to.eql("Page View");
+      expect(path(["data", 0, "label"], transformed[0])).to.eql(
+        "Context Payload"
+      );
     });
   });
 
@@ -26,7 +28,7 @@ describe("Snowplow", () => {
         pp: "Page Ping",
         tr: "Ecommerce transaction",
         ti: "Ecommerce transaction",
-        se: "Custom Structured Event",
+        se: "Custom Structured Event"
       };
 
       mapObjIndexed((eventTitle, eventKey) => {
@@ -34,11 +36,11 @@ describe("Snowplow", () => {
           const rwrd: GetRequest = {
             url: "http://someurl.tld",
             requestType: "GET",
-            requestParams: { e: eventKey },
+            requestParams: { e: eventKey }
           };
           const transformed = Snowplow.transformer(rwrd);
           it(`returns the event type as ${eventTitle} `, () => {
-            expect(path(["meta", "title"], transformed)).to.eql(eventTitle);
+            expect(path(["meta", "title"], transformed[0])).to.eql(eventTitle);
           });
         });
       }, eventTypes);
@@ -47,11 +49,13 @@ describe("Snowplow", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { e: "ue", ue_px: snowplowFixture.ue_px },
+          requestParams: { e: "ue", ue_px: snowplowFixture.ue_px }
         };
         const transformed = Snowplow.transformer(rwrd);
         it("returns the event_name as the Title", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("property_details_carousel_click");
+          expect(path(["meta", "title"], transformed[0])).to.eql(
+            "property_details_carousel_click"
+          );
         });
       });
 
@@ -59,11 +63,11 @@ describe("Snowplow", () => {
         const rwrd: GetRequest = {
           url: "http://someurl.tld",
           requestType: "GET",
-          requestParams: { e: "pv" },
+          requestParams: { e: "pv" }
         };
         const transformed = Snowplow.transformer(rwrd);
         it("returns the event_name as the Title", () => {
-          expect(path(["meta", "title"], transformed)).to.eql("Page View");
+          expect(path(["meta", "title"], transformed[0])).to.eql("Page View");
         });
       });
     });
@@ -79,11 +83,13 @@ describe("Snowplow", () => {
                 const rwrd: GetRequest = {
                   url: "http://someurl.tld",
                   requestType: "GET",
-                  requestParams: requestParams,
+                  requestParams: requestParams
                 };
                 const transformed = Snowplow.transformer(rwrd);
                 it("Payload is decoded", () => {
-                  const payload = JSON.parse(path(["data", 0, "value"], transformed));
+                  const payload = JSON.parse(
+                    path([0, "data", 0, "value"], transformed)
+                  );
                   expect(payload).to.be.an("object");
                 });
               });
@@ -94,7 +100,7 @@ describe("Snowplow", () => {
                 const rwrd: GetRequest = {
                   url: "http://someurl.tld",
                   requestType: "GET",
-                  requestParams: requestParams,
+                  requestParams: requestParams
                 };
                 const transformer = () => Snowplow.transformer(rwrd);
 
@@ -103,13 +109,17 @@ describe("Snowplow", () => {
                 });
 
                 it("returns a JSON object indicating an error message", () => {
-                  const parsed = JSON.parse(path(["data", 0, "value"], transformer()));
-                  expect(parsed).to.contain({ error: "Could not parse data" });
+                  const parsed = JSON.parse(
+                    path([0, "data", 0, "value"], transformer())
+                  );
+                  expect(parsed).to.contain({
+                    error: "Could not parse data"
+                  });
                 });
               });
             });
           },
-          ["ue_px", "cx"],
+          ["ue_px", "cx"]
         );
       });
     });
@@ -118,11 +128,13 @@ describe("Snowplow", () => {
       const rwrd: GetRequest = {
         url: "http://someurl.tld",
         requestType: "GET",
-        requestParams: { cx: "test" },
+        requestParams: { cx: "test" }
       };
       const transformed = Snowplow.transformer(rwrd);
       it("sets the correct label", () => {
-        expect(path(["data", 0, "label"], transformed)).to.eql("Context Payload");
+        expect(path(["data", 0, "label"], transformed[0])).to.eql(
+          "Context Payload"
+        );
       });
     });
   });

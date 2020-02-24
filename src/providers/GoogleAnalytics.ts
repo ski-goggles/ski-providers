@@ -1,15 +1,30 @@
 import { defaultTo, find, isNil, map, prop, propOr, sortBy } from "ramda";
-import { createFormattedDataFromObject, labelReplacerFromDictionary, setTitle } from "../PrivateHelpers";
-import { FormattedDataItem, FormattedWebRequestData, LabelDictionary, Provider, RawWebRequestData } from "../types/Types";
+import {
+  createFormattedDataFromObject,
+  labelReplacerFromDictionary,
+  setTitle,
+} from "../PrivateHelpers";
+import {
+  FormattedDataGroup,
+  FormattedDataItem,
+  FormattedWebRequestData,
+  LabelDictionary,
+  Provider,
+  RawWebRequestData,
+} from "../types/Types";
 
 const EVENT_ACTION = "Event Action";
 const HIT_TYPE = "Hit Type";
 const PAGEVIEW = "pageview";
 
-const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData => {
-  const formatted: FormattedDataItem[] = parse(rwrd);
-  const data: FormattedDataItem[] = sortBy(prop("label"), map(transform, formatted));
-  return setTitle(getEventName(data), data);
+const transformer = (rwrd: RawWebRequestData): FormattedWebRequestData[] => {
+  return map((fdg: FormattedDataGroup) => {
+    const sorted: FormattedDataGroup = sortBy(
+      prop("label"),
+      map(transform, fdg),
+    );
+    return setTitle(getEventName(sorted), sorted);
+  }, parse(rwrd));
 };
 
 const GoogleAnalytics: Provider = {
@@ -21,10 +36,16 @@ const GoogleAnalytics: Provider = {
 };
 
 const getEventName = (params: FormattedDataItem[]): string | null => {
-  const hitTypeRow = defaultTo({}, find(e => e.label == HIT_TYPE, params));
+  const hitTypeRow = defaultTo(
+    {},
+    find(e => e.label == HIT_TYPE, params),
+  );
   const hitType: string = propOr(null, "value", hitTypeRow);
 
-  const eventRow = defaultTo({}, find(e => e.label == EVENT_ACTION, params));
+  const eventRow = defaultTo(
+    {},
+    find(e => e.label == EVENT_ACTION, params),
+  );
   const eventName: string = propOr(null, "value", eventRow);
 
   if (hitType === PAGEVIEW) {
@@ -36,10 +57,10 @@ const getEventName = (params: FormattedDataItem[]): string | null => {
   }
 };
 
-const parse = (rwrd: RawWebRequestData): FormattedDataItem[] => {
+const parse = (rwrd: RawWebRequestData): FormattedDataGroup[] => {
   switch (rwrd.requestType) {
     case "GET":
-      return createFormattedDataFromObject(rwrd.requestParams);
+      return [createFormattedDataFromObject(rwrd.requestParams)];
     case "POST":
     // return map(createWebRequestParam, toPairs(rwrd.requestBody));
     default:
